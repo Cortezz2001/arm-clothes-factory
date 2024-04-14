@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace АРМ_Швейная_фабрика
 {
-    public partial class Form1 : Form
+    public partial class authForm : Form
     {
-        public Form1()
+        public authForm()
         {
             InitializeComponent();
         }
