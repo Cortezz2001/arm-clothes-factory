@@ -1,6 +1,6 @@
 ﻿namespace АРМ_Швейная_фабрика
 {
-    partial class authForm
+    partial class AuthForm
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthForm));
             this.guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.authBtn = new Guna.UI2.WinForms.Guna2Button();
@@ -51,7 +52,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(98, 49);
+            this.label1.Location = new System.Drawing.Point(100, 67);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(149, 30);
             this.label1.TabIndex = 0;
@@ -70,8 +71,9 @@
             this.authBtn.Location = new System.Drawing.Point(58, 302);
             this.authBtn.Name = "authBtn";
             this.authBtn.Size = new System.Drawing.Size(231, 48);
-            this.authBtn.TabIndex = 1;
+            this.authBtn.TabIndex = 3;
             this.authBtn.Text = "Войти";
+            this.authBtn.Click += new System.EventHandler(this.AuthBtn_Click);
             // 
             // loginTB
             // 
@@ -86,14 +88,16 @@
             this.loginTB.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.loginTB.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.loginTB.HoverState.PlaceholderForeColor = System.Drawing.Color.DodgerBlue;
+            this.loginTB.IconLeft = ((System.Drawing.Image)(resources.GetObject("loginTB.IconLeft")));
+            this.loginTB.IconLeftOffset = new System.Drawing.Point(10, 0);
             this.loginTB.Location = new System.Drawing.Point(58, 134);
-            this.loginTB.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.loginTB.Margin = new System.Windows.Forms.Padding(5);
             this.loginTB.Name = "loginTB";
             this.loginTB.PasswordChar = '\0';
             this.loginTB.PlaceholderText = "Логин";
             this.loginTB.SelectedText = "";
             this.loginTB.Size = new System.Drawing.Size(231, 48);
-            this.loginTB.TabIndex = 2;
+            this.loginTB.TabIndex = 1;
             this.loginTB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // passwordTB
@@ -110,8 +114,10 @@
             this.passwordTB.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.passwordTB.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.passwordTB.HoverState.PlaceholderForeColor = System.Drawing.Color.DodgerBlue;
+            this.passwordTB.IconLeft = ((System.Drawing.Image)(resources.GetObject("passwordTB.IconLeft")));
+            this.passwordTB.IconLeftOffset = new System.Drawing.Point(10, 0);
             this.passwordTB.Location = new System.Drawing.Point(58, 192);
-            this.passwordTB.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.passwordTB.Margin = new System.Windows.Forms.Padding(5);
             this.passwordTB.Name = "passwordTB";
             this.passwordTB.PasswordChar = '*';
             this.passwordTB.PlaceholderText = "Пароль";
@@ -146,8 +152,9 @@
             this.closeFormBtn.Size = new System.Drawing.Size(28, 28);
             this.closeFormBtn.TabIndex = 4;
             this.closeFormBtn.Text = "X";
+            this.closeFormBtn.Click += new System.EventHandler(this.CloseFormBtn_Click);
             // 
-            // Form1
+            // AuthForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -160,7 +167,7 @@
             this.Controls.Add(this.authBtn);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "Form1";
+            this.Name = "AuthForm";
             this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -16,7 +16,10 @@ namespace АРМ_Швейная_фабрика
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new authForm());
+            //Application.Run(new authForm());
+            MainForm mainForm = new MainForm();
+            AuthForm authForm = new AuthForm(mainForm);
+            Application.Run(authForm);
         }
     }
 }
