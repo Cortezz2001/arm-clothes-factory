@@ -15,20 +15,21 @@ namespace АРМ_Швейная_фабрика
     {
         private string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\D диск\АРМ швейная фабрика\АРМ Швейная фабрика\DB.mdf;Integrated Security=True";
         private bool isDragging = false;
+        bool comboBoxesAdded = false;
         private int mouseX;
         private int mouseY;
+
         public MainForm()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point((Screen.PrimaryScreen.Bounds.Width - this.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - this.Height) / 2);
             TreeFill(treeView);
- 
         }
 
         private void CloseFormBtn_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Application.Exit();
         }
 
         private void TopPanel_MouseMove(object sender, MouseEventArgs e)
@@ -84,46 +85,53 @@ namespace АРМ_Швейная_фабрика
         {
             if (e.Node.Parent != null && e.Node.Parent.Parent == null)
             {
-
                 technology_name.Text = "Технология: " + e.Node.Text;
             }
-        }
 
-        private void TreeView_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (treeView.SelectedNode != null)
+            if (treeView.SelectedNode != null && treeView.SelectedNode.Level == 1)
             {
-                if (treeView.SelectedNode.Level == 1)
+                string tech_route_name = treeView.SelectedNode.Text;
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string tech_route_name = treeView.SelectedNode.Text;
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    connection.Open();
+
+                    string queryRouteId = "SELECT route_ID FROM technological_route WHERE name = @tech_route_name";
+                    using (SqlCommand cmdRouteId = new SqlCommand(queryRouteId, connection))
                     {
-                        connection.Open();
+                        cmdRouteId.Parameters.AddWithValue("@tech_route_name", tech_route_name);
+                        string route_ID = cmdRouteId.ExecuteScalar()?.ToString(); // Используем безопасную навигацию
 
-                        string queryRouteId = "SELECT route_ID FROM technological_route WHERE name = @tech_route_name";
-                        using (SqlCommand cmdRouteId = new SqlCommand(queryRouteId, connection))
+                        if (!string.IsNullOrEmpty(route_ID))
                         {
-                            cmdRouteId.Parameters.AddWithValue("@tech_route_name", tech_route_name);
-                            string route_ID = cmdRouteId.ExecuteScalar().ToString();
-
-                            string queryProcesses = "SELECT ID, name, type, normatives, time, route_ID, equip_ID, position_ID FROM technological_process WHERE route_ID = @route_ID";
-                            using (SqlCommand cmdProcesses = new SqlCommand(queryProcesses, connection))
+                            string queryProcessID = "SELECT ID FROM technological_process WHERE route_ID = @route_ID";
+                            using (SqlCommand cmdProcessID = new SqlCommand(queryProcessID, connection))
                             {
-                                cmdProcesses.Parameters.AddWithValue("@route_ID", route_ID);
-                                SqlDataAdapter adapter = new SqlDataAdapter(cmdProcesses);
-                                DataTable dataTable = new DataTable();
-                                adapter.Fill(dataTable);
+                                cmdProcessID.Parameters.AddWithValue("@route_ID", route_ID);
+                                int processID = (int)(cmdProcessID.ExecuteScalar() ?? 0); // Используем безопасную навигацию
+                                LoadMaterials(processID);
+                            }
+                        }
 
-                                // Добавление новых столбцов для комбобоксов
-                                DataGridViewComboBoxColumn routeColumn = new DataGridViewComboBoxColumn();
-                                routeColumn.HeaderText = "Маршрут";
-                                routeColumn.Name = "routeColumn";
-                                routeColumn.DataSource = GetTechnologicalRoutes(); // Загрузка данных из таблицы technological_route
-                                routeColumn.DataPropertyName = "route_ID";
-                                routeColumn.DisplayMember = "name";
-                                routeColumn.ValueMember = "route_ID";
-                                
+                        string queryProcesses = "SELECT ID, name, type, normatives, time, route_ID, equip_ID, position_ID FROM technological_process WHERE route_ID = @route_ID";
+                        using (SqlCommand cmdProcesses = new SqlCommand(queryProcesses, connection))
+                        {
+                            cmdProcesses.Parameters.AddWithValue("@route_ID", route_ID);
+                            SqlDataAdapter adapter = new SqlDataAdapter(cmdProcesses);
+                            DataTable dataTable = new DataTable();
+                            adapter.Fill(dataTable);
 
+                            // Добавляем пустую строку, если таблица пуста
+                            if (dataTable.Rows.Count == 0)
+                            {
+                                dataTable.Rows.Add(dataTable.NewRow());
+                            }
+
+                            // Привязываем данные к mainDGV
+                            mainDGV.DataSource = dataTable;
+
+                            // Добавляем колонки ComboBox, если это еще не сделано
+                            if (!comboBoxesAdded)
+                            {
                                 DataGridViewComboBoxColumn equipColumn = new DataGridViewComboBoxColumn();
                                 equipColumn.HeaderText = "Оборудование";
                                 equipColumn.Name = "equipColumn";
@@ -131,63 +139,93 @@ namespace АРМ_Швейная_фабрика
                                 equipColumn.DataPropertyName = "equip_ID";
                                 equipColumn.DisplayMember = "name";
                                 equipColumn.ValueMember = "equip_ID";
-                                
 
-                                DataGridViewComboBoxColumn positionColumn = new DataGridViewComboBoxColumn(); 
+                                DataGridViewComboBoxColumn positionColumn = new DataGridViewComboBoxColumn();
                                 positionColumn.HeaderText = "Позиция";
                                 positionColumn.Name = "positionColumn";
                                 positionColumn.DataSource = GetPositions(); // Загрузка данных из таблицы position
                                 positionColumn.DataPropertyName = "position_ID";
                                 positionColumn.DisplayMember = "name";
                                 positionColumn.ValueMember = "position_ID";
-                                
 
-                                mainDGV.DataSource = dataTable;
-                                mainDGV.Columns["ID"].HeaderText = "Номер";
-                                mainDGV.Columns["name"].HeaderText = "Наименование операции";
-                                mainDGV.Columns["type"].HeaderText = "Способ работы";
-                                mainDGV.Columns["normatives"].HeaderText = "Нормативы";
-                                mainDGV.Columns["time"].HeaderText = "Время(с)";
-                                mainDGV.Columns.Add(routeColumn);
                                 mainDGV.Columns.Add(equipColumn);
                                 mainDGV.Columns.Add(positionColumn);
-                                mainDGV.Columns["route_ID"].Visible = false;
-                                mainDGV.Columns["equip_ID"].Visible = false;
-                                mainDGV.Columns["position_ID"].Visible = false;
-                                mainDGV.CurrentCell = null;
+
+                                comboBoxesAdded = true;
                             }
+
+                            // Устанавливаем стили и размеры ячеек
+                            mainDGV.Columns["ID"].HeaderText = "Номер";
+                            mainDGV.Columns["name"].HeaderText = "Наименование операции";
+                            mainDGV.Columns["type"].HeaderText = "Способ работы";
+                            mainDGV.Columns["normatives"].HeaderText = "Нормативы";
+                            mainDGV.Columns["time"].HeaderText = "Время(с)";
+                            mainDGV.Columns["route_ID"].Visible = false;
+                            mainDGV.Columns["equip_ID"].Visible = false;
+                            mainDGV.Columns["position_ID"].Visible = false;
+                            mainDGV.CurrentCell = null;
                         }
                     }
                 }
             }
+
+            // Устанавливаем размеры и стили ячеек в DataGridView для материалов
+            materialsDGV.ColumnHeadersHeight = 25;
+            a_materialsDGV.ColumnHeadersHeight = 25;
             mainDGV.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             foreach (DataGridViewColumn column in mainDGV.Columns)
             {
                 column.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            }
-            //mainDGV.AutoResizeRows(DataGridViewAutoSizeRowsMode.AllCells);
-            foreach (DataGridViewColumn column in mainDGV.Columns)
-            {
                 column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
         }
 
-        // Функции для загрузки данных в комбобоксы
-        private DataTable GetTechnologicalRoutes()
+        private void TreeView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            DataTable table = new DataTable();
+
+
+        }
+        private void LoadMaterials(int processID)
+        {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string query = "SELECT route_ID, name FROM technological_route";
-                using (SqlCommand command = new SqlCommand(query, connection))
+
+                // Загрузка материалов
+                string queryMaterials = "SELECT m.name AS MaterialName, nm.quantity " +
+                                        "FROM necessary_materials nm " +
+                                        "INNER JOIN materials m ON nm.material_ID = m.material_ID " +
+                                        "WHERE nm.ID = @processID";
+                using (SqlCommand cmdMaterials = new SqlCommand(queryMaterials, connection))
                 {
-                    SqlDataAdapter adapter = new SqlDataAdapter(command);
-                    adapter.Fill(table);
+                    cmdMaterials.Parameters.AddWithValue("@processID", processID);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmdMaterials);
+                    DataTable materialsTable = new DataTable();
+                    adapter.Fill(materialsTable);
+                    materialsDGV.DataSource = materialsTable;
+                    materialsDGV.Columns["MaterialName"].HeaderText = "Наименование";
+                    materialsDGV.Columns["quantity"].HeaderText = "Количество";
                 }
+
+                // Загрузка дополнительных материалов
+                string queryAdditionalMaterials = "SELECT am.name AS AdditionalMaterialName, nam.quantity " +
+                                                   "FROM necessary_a_materials nam " +
+                                                   "INNER JOIN additional_materials am ON nam.a_material_ID = am.a_material_ID " +
+                                                   "WHERE nam.ID = @processID";
+                using (SqlCommand cmdAdditionalMaterials = new SqlCommand(queryAdditionalMaterials, connection))
+                {
+                    cmdAdditionalMaterials.Parameters.AddWithValue("@processID", processID);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmdAdditionalMaterials);
+                    DataTable additionalMaterialsTable = new DataTable();
+                    adapter.Fill(additionalMaterialsTable);
+                    a_materialsDGV.DataSource = additionalMaterialsTable;
+                    a_materialsDGV.Columns["AdditionalMaterialName"].HeaderText = "Наименование";
+                    a_materialsDGV.Columns["quantity"].HeaderText = "Количество";
+                }
+
             }
-            return table;
         }
+
 
         private DataTable GetEquipment()
         {
@@ -219,6 +257,141 @@ namespace АРМ_Швейная_фабрика
                 }
             }
             return table;
+        }
+
+        private void SearchBoxTV_TextChanged(object sender, EventArgs e)
+        {
+            string searchText = searchBoxTV.Text.ToLower();
+
+            foreach (TreeNode node in treeView.Nodes)
+            {
+                if (node.Text.ToLower().Contains(searchText))
+                {
+                    node.BackColor = System.Drawing.Color.Yellow;
+                }
+                else
+                {
+                    node.BackColor = System.Drawing.Color.White;
+                }
+
+                foreach (TreeNode childNode in node.Nodes)
+                {
+                    if (childNode.Text.ToLower().Contains(searchText))
+                    {
+                        childNode.BackColor = System.Drawing.Color.Yellow;
+                        node.Expand();
+                    }
+                    else
+                    {
+                        childNode.BackColor = System.Drawing.Color.White;
+                    }
+
+                    foreach (TreeNode grandChildNode in childNode.Nodes)
+                    {
+                        if (grandChildNode.Text.ToLower().Contains(searchText))
+                        {
+                            grandChildNode.BackColor = System.Drawing.Color.Yellow;
+                            node.Expand();
+                            childNode.Expand();
+                        }
+                        else
+                        {
+                            grandChildNode.BackColor = System.Drawing.Color.White;
+                        }
+                        foreach (TreeNode schemeNode in grandChildNode.Nodes)
+                        {
+                            if (schemeNode.Text.ToLower().Contains(searchBoxTV.Text.ToLower()))
+                            {
+                                schemeNode.BackColor = System.Drawing.Color.Yellow;
+                                schemeNode.ForeColor = System.Drawing.Color.Black;
+
+                                schemeNode.EnsureVisible();
+
+                                treeView.SelectedNode = schemeNode;
+                            }
+                            else
+                            {
+                                schemeNode.BackColor = System.Drawing.Color.White;
+                                schemeNode.ForeColor = System.Drawing.Color.Black;
+                            }
+                        }
+                    }
+                }
+            }
+            if (string.IsNullOrEmpty(searchBoxTV.Text))
+            {
+                foreach (TreeNode node in treeView.Nodes)
+                {
+                    ResetNodeColor(node);
+                }
+            }
+            else
+            {
+                SearchNodes(treeView.Nodes, searchBoxTV.Text);
+            }
+
+            string searchDGV = searchBoxTV.Text.ToLower();
+            foreach (DataGridViewRow row in mainDGV.Rows)
+            {
+                // Проход по каждой строке таблицы данных
+                bool rowVisible = false;
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    // Проход по каждой ячейке в строке
+                    if (cell.Value != null && cell.Value.ToString().ToLower().Contains(searchDGV))
+                    {
+                        // Если значение ячейки содержит искомый текст, то делаем строку видимой
+                        rowVisible = true;
+                        break;
+                    }
+                }
+                row.Visible = rowVisible;
+            }
+        }
+
+        private void ResetNodeColor(TreeNode node)
+        {
+            node.BackColor = System.Drawing.Color.White;
+            foreach (TreeNode childNode in node.Nodes)
+            {
+                ResetNodeColor(childNode);
+            }
+        }
+
+        private void SearchNodes(TreeNodeCollection nodes, string searchQuery)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (node.Text.ToLower().Contains(searchQuery.ToLower()))
+                {
+                    node.Expand();
+                    treeView.SelectedNode = node;
+                    return;
+                }
+
+                if (node.Nodes.Count > 0)
+                {
+                    SearchNodes(node.Nodes, searchQuery);
+                }
+
+            }
+        }
+
+        private void ИзделиеtoolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddProductForm AddProductForm = new AddProductForm(this);
+            AddProductForm.Show();
+        }
+
+        private void ТехнологияToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddTechRouteForm AddTechRouteForm = new AddTechRouteForm(this);
+            AddTechRouteForm.Show();
+        }
+
+        private void MainDGV_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

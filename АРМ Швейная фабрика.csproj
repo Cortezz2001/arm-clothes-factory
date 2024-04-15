@@ -67,6 +67,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddProductForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddProductForm.Designer.cs">
+      <DependentUpon>AddProductForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddTechRouteForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddTechRouteForm.Designer.cs">
+      <DependentUpon>AddTechRouteForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="AuthForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,6 +94,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AddProductForm.resx">
+      <DependentUpon>AddProductForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddTechRouteForm.resx">
+      <DependentUpon>AddTechRouteForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AuthForm.resx">
       <DependentUpon>AuthForm.cs</DependentUpon>
     </EmbeddedResource>
