@@ -79,15 +79,11 @@ namespace АРМ_Швейная_фабрика
 
                 }
             }
+            treeView.ExpandAll();
         }
 
         private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Parent != null && e.Node.Parent.Parent == null)
-            {
-                technology_name.Text = "Технология: " + e.Node.Text;
-            }
-
             if (treeView.SelectedNode != null && treeView.SelectedNode.Level == 1)
             {
                 string tech_route_name = treeView.SelectedNode.Text;
@@ -99,85 +95,182 @@ namespace АРМ_Швейная_фабрика
                     using (SqlCommand cmdRouteId = new SqlCommand(queryRouteId, connection))
                     {
                         cmdRouteId.Parameters.AddWithValue("@tech_route_name", tech_route_name);
-                        string route_ID = cmdRouteId.ExecuteScalar()?.ToString(); // Используем безопасную навигацию
+                        object route_ID = cmdRouteId.ExecuteScalar();
 
-                        if (!string.IsNullOrEmpty(route_ID))
+                        if (route_ID != null && route_ID != DBNull.Value)
                         {
-                            string queryProcessID = "SELECT ID FROM technological_process WHERE route_ID = @route_ID";
-                            using (SqlCommand cmdProcessID = new SqlCommand(queryProcessID, connection))
-                            {
-                                cmdProcessID.Parameters.AddWithValue("@route_ID", route_ID);
-                                int processID = (int)(cmdProcessID.ExecuteScalar() ?? 0); // Используем безопасную навигацию
-                                LoadMaterials(processID);
-                            }
-                        }
+                            int routeID = Convert.ToInt32(route_ID);
 
-                        string queryProcesses = "SELECT ID, name, type, normatives, time, route_ID, equip_ID, position_ID FROM technological_process WHERE route_ID = @route_ID";
-                        using (SqlCommand cmdProcesses = new SqlCommand(queryProcesses, connection))
-                        {
-                            cmdProcesses.Parameters.AddWithValue("@route_ID", route_ID);
-                            SqlDataAdapter adapter = new SqlDataAdapter(cmdProcesses);
-                            DataTable dataTable = new DataTable();
-                            adapter.Fill(dataTable);
+                            // Извлекаем данные из таблицы technological_process
+                            DataTable dt_technological_process = GetTechnologicalProcessData(routeID);
 
-                            // Добавляем пустую строку, если таблица пуста
-                            if (dataTable.Rows.Count == 0)
-                            {
-                                dataTable.Rows.Add(dataTable.NewRow());
-                            }
+                            // Извлекаем данные из связанных таблиц necessary_materials и necessary_a_materials
+                            DataTable dt_necessary_materials = GetNecessaryMaterialsData(routeID);
+                            DataTable dt_necessary_a_materials = GetNecessaryAdditionalMaterialsData(routeID);
 
-                            // Привязываем данные к mainDGV
-                            mainDGV.DataSource = dataTable;
-
-                            // Добавляем колонки ComboBox, если это еще не сделано
-                            if (!comboBoxesAdded)
-                            {
-                                DataGridViewComboBoxColumn equipColumn = new DataGridViewComboBoxColumn();
-                                equipColumn.HeaderText = "Оборудование";
-                                equipColumn.Name = "equipColumn";
-                                equipColumn.DataSource = GetEquipment(); // Загрузка данных из таблицы equipment
-                                equipColumn.DataPropertyName = "equip_ID";
-                                equipColumn.DisplayMember = "name";
-                                equipColumn.ValueMember = "equip_ID";
-
-                                DataGridViewComboBoxColumn positionColumn = new DataGridViewComboBoxColumn();
-                                positionColumn.HeaderText = "Позиция";
-                                positionColumn.Name = "positionColumn";
-                                positionColumn.DataSource = GetPositions(); // Загрузка данных из таблицы position
-                                positionColumn.DataPropertyName = "position_ID";
-                                positionColumn.DisplayMember = "name";
-                                positionColumn.ValueMember = "position_ID";
-
-                                mainDGV.Columns.Add(equipColumn);
-                                mainDGV.Columns.Add(positionColumn);
-
-                                comboBoxesAdded = true;
-                            }
-
-                            // Устанавливаем стили и размеры ячеек
-                            mainDGV.Columns["ID"].HeaderText = "Номер";
-                            mainDGV.Columns["name"].HeaderText = "Наименование операции";
-                            mainDGV.Columns["type"].HeaderText = "Способ работы";
-                            mainDGV.Columns["normatives"].HeaderText = "Нормативы";
-                            mainDGV.Columns["time"].HeaderText = "Время(с)";
-                            mainDGV.Columns["route_ID"].Visible = false;
-                            mainDGV.Columns["equip_ID"].Visible = false;
-                            mainDGV.Columns["position_ID"].Visible = false;
-                            mainDGV.CurrentCell = null;
+                            // Выводим данные в соответствующие элементы управления
+                            mainDGV.DataSource = dt_technological_process;
+                            materialsDGV.DataSource = dt_necessary_materials;
+                            a_materialsDGV.DataSource = dt_necessary_a_materials;
                         }
                     }
                 }
             }
+            //if (treeView.SelectedNode != null)
+            //{
+            //    if (treeView.SelectedNode.Level == 1)
+            //    {
 
-            // Устанавливаем размеры и стили ячеек в DataGridView для материалов
+            //        string tech_route_name = treeView.SelectedNode.Text;
+            //        using (SqlConnection connection = new SqlConnection(connectionString))
+            //        {
+            //            connection.Open();
+
+            //            string queryRouteId = "SELECT route_ID FROM technological_route WHERE name = @tech_route_name";
+            //            using (SqlCommand cmdRouteId = new SqlCommand(queryRouteId, connection))
+            //            {
+            //                cmdRouteId.Parameters.AddWithValue("@tech_route_name", tech_route_name);
+            //                string route_ID = cmdRouteId.ExecuteScalar().ToString();
+
+            //                if (!string.IsNullOrEmpty(route_ID))
+            //                {
+            //                    string queryProcessID = "SELECT ID FROM technological_process WHERE route_ID = @route_ID";
+            //                    using (SqlCommand cmdProcessID = new SqlCommand(queryProcessID, connection))
+            //                    {
+            //                        cmdProcessID.Parameters.AddWithValue("@route_ID", route_ID);
+            //                        int processID = (int)cmdProcessID.ExecuteScalar();
+            //                        LoadMaterials(processID);
+            //                    }
+            //                }
+
+            //                string queryProcesses = "SELECT ID, name, type, normatives, time, route_ID, equip_ID, position_ID FROM technological_process WHERE route_ID = @route_ID";
+            //                using (SqlCommand cmdProcesses = new SqlCommand(queryProcesses, connection))
+            //                {
+            //                    cmdProcesses.Parameters.AddWithValue("@route_ID", route_ID);
+            //                    SqlDataAdapter adapter = new SqlDataAdapter(cmdProcesses);
+            //                    DataTable dataTable = new DataTable();
+            //                    adapter.Fill(dataTable);
+
+            //                    DataGridViewComboBoxColumn equipColumn = new DataGridViewComboBoxColumn();
+            //                    equipColumn.HeaderText = "Оборудование";
+            //                    equipColumn.Name = "equipColumn";
+            //                    equipColumn.DataSource = GetEquipment(); // Загрузка данных из таблицы equipment
+            //                    equipColumn.DataPropertyName = "equip_ID";
+            //                    equipColumn.DisplayMember = "name";
+            //                    equipColumn.ValueMember = "equip_ID";
+
+
+            //                    DataGridViewComboBoxColumn positionColumn = new DataGridViewComboBoxColumn();
+            //                    positionColumn.HeaderText = "Позиция";
+            //                    positionColumn.Name = "positionColumn";
+            //                    positionColumn.DataSource = GetPositions(); // Загрузка данных из таблицы position
+            //                    positionColumn.DataPropertyName = "position_ID";
+            //                    positionColumn.DisplayMember = "name";
+            //                    positionColumn.ValueMember = "position_ID";
+
+
+            //                    mainDGV.DataSource = dataTable;
+            //                    mainDGV.Columns["ID"].HeaderText = "Номер";
+            //                    mainDGV.Columns["name"].HeaderText = "Наименование операции";
+            //                    mainDGV.Columns["type"].HeaderText = "Способ работы";
+            //                    mainDGV.Columns["normatives"].HeaderText = "Нормативы";
+            //                    mainDGV.Columns["time"].HeaderText = "Время(с)";
+            //                    if (!comboBoxesAdded)
+            //                    {
+            //                        mainDGV.Columns.Add(equipColumn);
+            //                        mainDGV.Columns.Add(positionColumn);
+
+            //                        comboBoxesAdded = true;
+            //                    }
+
+            //                    mainDGV.Columns["route_ID"].Visible = false;
+            //                    mainDGV.Columns["equip_ID"].Visible = false;
+            //                    mainDGV.Columns["position_ID"].Visible = false;
+            //                    mainDGV.CurrentCell = null;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+
+
             materialsDGV.ColumnHeadersHeight = 25;
             a_materialsDGV.ColumnHeadersHeight = 25;
+
             mainDGV.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             foreach (DataGridViewColumn column in mainDGV.Columns)
             {
                 column.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            }
+            foreach (DataGridViewColumn column in mainDGV.Columns)
+            {
                 column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
+        }
+
+        private DataTable GetTechnologicalProcessData(int routeID)
+        {
+            DataTable dt_technological_process = new DataTable();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = "SELECT * FROM technological_process WHERE route_ID = @RouteID";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@RouteID", routeID);
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                    {
+                        adapter.Fill(dt_technological_process);
+                    }
+                }
+            }
+            return dt_technological_process;
+        }
+
+        private DataTable GetNecessaryMaterialsData(int routeID)
+        {
+            DataTable dt_necessary_materials = new DataTable();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = "SELECT * FROM necessary_materials WHERE ID = @RouteID";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@RouteID", routeID);
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                    {
+                        adapter.Fill(dt_necessary_materials);
+                    }
+                }
+            }
+            return dt_necessary_materials;
+        }
+        private DataTable GetNecessaryAdditionalMaterialsData(int routeID)
+        {
+            DataTable dt_necessary_a_materials = new DataTable();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = "SELECT * FROM necessary_a_materials WHERE ID = @RouteID";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@RouteID", routeID);
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                    {
+                        adapter.Fill(dt_necessary_a_materials);
+                    }
+                }
+            }
+            return dt_necessary_a_materials;
+        }
+        private int GetRouteIDFromNode(TreeNode node)
+        {
+            // Получаем ID технологического процесса из Tag выбранного узла
+            if (node.Tag != null && node.Tag is int)
+            {
+                return (int)node.Tag;
+            }
+            return -1; // Возвращаем -1 если ID не найден
         }
 
         private void TreeView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -387,11 +480,6 @@ namespace АРМ_Швейная_фабрика
         {
             AddTechRouteForm AddTechRouteForm = new AddTechRouteForm(this);
             AddTechRouteForm.Show();
-        }
-
-        private void MainDGV_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
     }
 }
