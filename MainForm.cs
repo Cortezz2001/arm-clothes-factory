@@ -454,14 +454,25 @@ namespace АРМ_Швейная_фабрика
 
         private void ИзделиеtoolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddProductForm AddProductForm = new AddProductForm(this);
-            AddProductForm.Show();
+            //AddProductForm AddProductForm = new AddProductForm(this);
+            //AddProductForm.Show();
+            TreeNode newNode = treeView.Nodes.Add("");
+            treeView.SelectedNode = newNode;
+            newNode.BeginEdit();
         }
 
         private void ТехнологияToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddTechRouteForm AddTechRouteForm = new AddTechRouteForm(this);
-            AddTechRouteForm.Show();
+            //AddTechRouteForm AddTechRouteForm = new AddTechRouteForm(this);
+            //AddTechRouteForm.Show();
+            if (treeView.SelectedNode != null && treeView.SelectedNode.Level == 0)
+            {
+                TreeNode newNode = treeView.SelectedNode.Nodes.Add("");
+                newNode.ImageKey = "route.png";
+                newNode.SelectedImageKey = "route.png";
+                treeView.SelectedNode = newNode;
+                newNode.BeginEdit();
+            }
         }
 
         private void AddMainBtn_Click(object sender, EventArgs e)
@@ -972,45 +983,144 @@ namespace АРМ_Швейная_фабрика
         {
             if (e.Node != null && e.Label != null)
             {
-                if (e.Node.Level == 0) // Если выбран уровень продукта
+                if (e.Node.Level == 0) 
                 {
-                    int productID = (int)e.Node.Tag; // Получаем product_ID из Tag
+                    int? productID = e.Node.Tag as int?; 
                     string newName = e.Label;
 
-                    // Выполнение SQL-запроса для обновления имени продукта в базе данных
-                    string query = "UPDATE product SET name = @Name WHERE product_ID = @ProductID";
-
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    if (productID == null) 
                     {
-                        using (SqlCommand command = new SqlCommand(query, connection))
-                        {
-                            command.Parameters.AddWithValue("@Name", newName);
-                            command.Parameters.AddWithValue("@ProductID", productID);
+                        string insertQuery = "INSERT INTO product (name) VALUES (@Name); SELECT SCOPE_IDENTITY();";
 
-                            connection.Open();
-                            command.ExecuteNonQuery();
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                            {
+                                command.Parameters.AddWithValue("@Name", newName);
+
+                                connection.Open();
+                                productID = Convert.ToInt32(command.ExecuteScalar()); 
+                            }
+                        }
+                    }
+                    else {
+
+                        string query = "UPDATE product SET name = @Name WHERE product_ID = @ProductID";
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            using (SqlCommand command = new SqlCommand(query, connection))
+                            {
+                                command.Parameters.AddWithValue("@Name", newName);
+                                command.Parameters.AddWithValue("@ProductID", productID);
+
+                                connection.Open();
+                                command.ExecuteNonQuery();
+                            }
+                        }
+                    }
+
+                }
+                else if (e.Node.Level == 1) 
+                {
+                    int? routeID = e.Node.Tag as int?; 
+                    string newName = e.Label;
+
+                    int? productID = (e.Node.Parent.Tag as int?) ?? null;
+
+                    if (routeID == null && productID != null)
+                    {
+                        string insertQuery = "INSERT INTO technological_route (name, product_ID) VALUES (@Name, @ProductID); SELECT SCOPE_IDENTITY();";
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                            {
+                                command.Parameters.AddWithValue("@Name", newName);
+                                command.Parameters.AddWithValue("@ProductID", productID);
+
+                                connection.Open();
+                                routeID = Convert.ToInt32(command.ExecuteScalar());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string query = "UPDATE technological_route SET name = @Name WHERE route_ID = @RouteID";
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            using (SqlCommand command = new SqlCommand(query, connection))
+                            {
+                                command.Parameters.AddWithValue("@Name", newName);
+                                command.Parameters.AddWithValue("@RouteID", routeID);
+
+                                connection.Open();
+                                command.ExecuteNonQuery();
+                            }
                         }
                     }
                 }
-                else if (e.Node.Level == 1) // Если выбран уровень маршрута
+            }
+            else
+            {
+                MessageBox.Show("Элемент не может быть пустым", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                e.Node.Remove();
+            }
+        }
+
+        private void SearchBoxDGV_TextChanged(object sender, EventArgs e)
+        {
+            string searchText = searchBoxDGV.Text.ToLower();
+
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                if (mainDGV.Rows.Count > 0)
                 {
-                    int routeID = (int)e.Node.Tag; // Получаем route_ID из Tag
-                    string newName = e.Label;
+                    mainDGV.Rows[0].Selected = true;
+                }
 
-                    // Выполнение SQL-запроса для обновления имени маршрута в базе данных
-                    string query = "UPDATE technological_route SET name = @Name WHERE route_ID = @RouteID";
-
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                // Очистка выделения остальных строк
+                foreach (DataGridViewRow row in mainDGV.Rows)
+                {
+                    if (row.Index != 0)
                     {
-                        using (SqlCommand command = new SqlCommand(query, connection))
-                        {
-                            command.Parameters.AddWithValue("@Name", newName);
-                            command.Parameters.AddWithValue("@RouteID", routeID);
+                        row.Selected = false;
+                    }
+                }
 
-                            connection.Open();
-                            command.ExecuteNonQuery();
+                return;
+            }
+
+            foreach (DataGridViewRow row in mainDGV.Rows)
+            {
+                bool rowFound = false;
+
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    // Проверяем, является ли ячейка комбобоксом
+                    if (cell is DataGridViewComboBoxCell comboBoxCell)
+                    {
+                        // Проверяем, содержит ли комбобокс искомый текст в выбранном значении
+                        if (comboBoxCell.FormattedValue != null && comboBoxCell.FormattedValue.ToString().ToLower().Contains(searchText))
+                        {
+                            row.Selected = true;
+                            rowFound = true;
+                            break;
                         }
                     }
+                    // Проверяем, содержит ли ячейка искомый текст
+                    else if (cell.Value != null && cell.Value.ToString().ToLower().Contains(searchText))
+                    {
+                        row.Selected = true;
+                        rowFound = true;
+                        break;
+                    }
+                }
+
+                if (!rowFound)
+                {
+                    row.Selected = false;
                 }
             }
         }
