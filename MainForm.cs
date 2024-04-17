@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using Word = Microsoft.Office.Interop.Word;
+using Excel = Microsoft.Office.Interop.Excel;
+using iTextSharp.text.pdf;
 namespace АРМ_Швейная_фабрика
 {
     public partial class MainForm : Form
@@ -22,7 +20,7 @@ namespace АРМ_Швейная_фабрика
         public MainForm()
         {
             InitializeComponent();
-            mainDGV.CellValueChanged += new DataGridViewCellEventHandler(MainDGV_CellValueChanged); 
+            mainDGV.CellValueChanged += new DataGridViewCellEventHandler(MainDGV_CellValueChanged);
             materialsDGV.CellValueChanged += new DataGridViewCellEventHandler(MaterialsDGV_CellValueChanged);
             a_materialsDGV.CellValueChanged += new DataGridViewCellEventHandler(A_materialsDGV_CellValueChanged);
             mainDGV.SelectionChanged += MainDGV_SelectionChanged;
@@ -107,7 +105,6 @@ namespace АРМ_Швейная_фабрика
                         {
                             int routeID = Convert.ToInt32(route_ID);
 
-                            // Извлекаем данные из таблицы technological_process
                             DataTable dt_technological_process = GetTechnologicalProcessData(routeID);
                             DataTable dt_necessary_materials = GetNecessaryMaterialsData(routeID);
                             DataTable dt_necessary_a_materials = GetNecessaryAdditionalMaterialsData(routeID);
@@ -120,7 +117,6 @@ namespace АРМ_Швейная_фабрика
                             materialColumn.ValueMember = "material_ID";
                             materialColumn.DataPropertyName = "material_ID";
 
-                            // Задаем комбобоксы для a_materialsDGV
                             DataGridViewComboBoxColumn additionalMaterialColumn = new DataGridViewComboBoxColumn();
                             additionalMaterialColumn.HeaderText = "Наименование";
                             additionalMaterialColumn.Name = "additionalMaterialColumn";
@@ -163,7 +159,7 @@ namespace АРМ_Швейная_фабрика
                             {
                                 mainDGV.Columns.Add(equipColumn);
                                 mainDGV.Columns.Add(positionColumn);
-                                materialsDGV.Columns.Insert(0,materialColumn);
+                                materialsDGV.Columns.Insert(0, materialColumn);
                                 a_materialsDGV.Columns.Insert(0, additionalMaterialColumn);
                                 comboBoxesAdded = true;
                             }
@@ -454,8 +450,6 @@ namespace АРМ_Швейная_фабрика
 
         private void ИзделиеtoolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //AddProductForm AddProductForm = new AddProductForm(this);
-            //AddProductForm.Show();
             TreeNode newNode = treeView.Nodes.Add("");
             treeView.SelectedNode = newNode;
             newNode.BeginEdit();
@@ -463,8 +457,6 @@ namespace АРМ_Швейная_фабрика
 
         private void ТехнологияToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //AddTechRouteForm AddTechRouteForm = new AddTechRouteForm(this);
-            //AddTechRouteForm.Show();
             if (treeView.SelectedNode != null && treeView.SelectedNode.Level == 0)
             {
                 TreeNode newNode = treeView.SelectedNode.Nodes.Add("");
@@ -506,10 +498,8 @@ namespace АРМ_Швейная_фабрика
                     {
                         command.Parameters.AddWithValue("@RouteID", routeID);
 
-                        // Получаем ID новой строки
                         int newID = Convert.ToInt32(command.ExecuteScalar());
 
-                        // Добавляем новую пустую строку в DataTable, связанный с mainDGV
                         DataTable dt = (DataTable)mainDGV.DataSource;
                         DataRow newRow = dt.NewRow();
                         newRow["ID"] = newID;
@@ -535,7 +525,7 @@ namespace АРМ_Швейная_фабрика
                     DataGridViewComboBoxCell comboCell = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewComboBoxCell;
                     value = comboCell.Value;
                 }
-                else 
+                else
                 {
                     value = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
                 }
@@ -570,7 +560,6 @@ namespace АРМ_Швейная_фабрика
                 string columnName = dgv.Columns[e.ColumnIndex].Name;
                 object value = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
 
-                // Обновление значений в базе данных
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
@@ -584,7 +573,6 @@ namespace АРМ_Швейная_фабрика
                     {
                         query = "UPDATE necessary_material SET material_ID = @Value WHERE n_material_ID = @NMaterialID";
                     }
-                    // Добавьте другие обработчики событий по мере необходимости
 
                     if (!string.IsNullOrEmpty(query))
                     {
@@ -603,10 +591,8 @@ namespace АРМ_Швейная_фабрика
         {
             if (mainDGV.SelectedRows.Count > 0)
             {
-                // Получаем ID выбранной операции
                 int processID = Convert.ToInt32(mainDGV.SelectedRows[0].Cells["ID"].Value);
 
-                // Обновляем данные в a_materialsDGV в соответствии с выбранной операцией
                 DataTable dt_necessary_a_materials = GetNecessaryAdditionalMaterialsData(processID);
                 a_materialsDGV.DataSource = dt_necessary_a_materials;
             }
@@ -622,7 +608,6 @@ namespace АРМ_Швейная_фабрика
                 string columnName = dgv.Columns[e.ColumnIndex].Name;
                 object value = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
 
-                // Обновление значений в базе данных
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
@@ -636,7 +621,6 @@ namespace АРМ_Швейная_фабрика
                     {
                         query = "UPDATE necessary_a_material SET a_material_ID = @Value WHERE n_a_material_ID = @NAmaterialID";
                     }
-                    // Добавьте другие обработчики событий по мере необходимости
 
                     if (!string.IsNullOrEmpty(query))
                     {
@@ -681,10 +665,8 @@ namespace АРМ_Швейная_фабрика
                     {
                         command.Parameters.AddWithValue("@RouteID", routeID);
 
-                        // Получаем ID новой строки
                         int newID = Convert.ToInt32(command.ExecuteScalar());
 
-                        // Добавляем новую пустую строку в DataTable, связанный с materialsDGV
                         DataTable dt = (DataTable)materialsDGV.DataSource;
                         DataRow newRow = dt.NewRow();
                         newRow["n_material_ID"] = newID;
@@ -698,7 +680,6 @@ namespace АРМ_Швейная_фабрика
         {
             if (mainDGV.SelectedRows.Count > 0)
             {
-                // Получаем ID из выбранной строки в mainDGV
                 int selectedID = Convert.ToInt32(mainDGV.SelectedRows[0].Cells["ID"].Value);
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -711,10 +692,8 @@ namespace АРМ_Швейная_фабрика
                     {
                         command.Parameters.AddWithValue("@SelectedID", selectedID);
 
-                        // Получаем ID новой строки
                         int newID = Convert.ToInt32(command.ExecuteScalar());
 
-                        // Добавляем новую пустую строку в DataTable, связанный с a_materialsDGV
                         DataTable dt = (DataTable)a_materialsDGV.DataSource;
                         DataRow newRow = dt.NewRow();
                         newRow["n_a_material_ID"] = newID;
@@ -730,7 +709,8 @@ namespace АРМ_Швейная_фабрика
             {
                 string itemName = treeView.SelectedNode.Text;
                 DialogResult result = MessageBox.Show($"Вы действительно хотите удалить \"{itemName}\"?", "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes) { 
+                if (result == DialogResult.Yes)
+                {
                     if (treeView.SelectedNode.Level == 0) // Удаление продукта и связанных данных
                     {
                         string productName = treeView.SelectedNode.Text;
@@ -739,7 +719,6 @@ namespace АРМ_Швейная_фабрика
                         {
                             connection.Open();
 
-                            // Получаем ID продукта по его имени
                             string getProductIDQuery = "SELECT product_ID FROM product WHERE name = @ProductName";
                             int productID;
                             using (SqlCommand command = new SqlCommand(getProductIDQuery, connection))
@@ -748,7 +727,6 @@ namespace АРМ_Швейная_фабрика
                                 productID = (int)command.ExecuteScalar();
                             }
 
-                            // Получаем все связанные маршруты для данного продукта
                             string getRoutesQuery = "SELECT route_ID FROM technological_route WHERE product_ID = @ProductID";
                             List<int> routeIDs = new List<int>();
                             using (SqlCommand command = new SqlCommand(getRoutesQuery, connection))
@@ -765,7 +743,6 @@ namespace АРМ_Швейная_фабрика
 
                             foreach (int routeID in routeIDs)
                             {
-                                // Удаление связанных данных из таблицы necessary_material
                                 string deleteNecessaryMaterialQuery = "DELETE FROM necessary_material WHERE route_ID = @RouteID";
                                 using (SqlCommand command = new SqlCommand(deleteNecessaryMaterialQuery, connection))
                                 {
@@ -773,7 +750,6 @@ namespace АРМ_Швейная_фабрика
                                     command.ExecuteNonQuery();
                                 }
 
-                                // Получаем все связанные процессы для данного маршрута
                                 string getProcessesQuery = "SELECT ID FROM technological_process WHERE route_ID = @RouteID";
                                 List<int> processIDs = new List<int>();
                                 using (SqlCommand command = new SqlCommand(getProcessesQuery, connection))
@@ -790,7 +766,6 @@ namespace АРМ_Швейная_фабрика
 
                                 foreach (int processID in processIDs)
                                 {
-                                    // Удаление связанных данных из таблицы necessary_a_material
                                     string deleteNecessaryAMaterialQuery = "DELETE FROM necessary_a_material WHERE ID = @ProcessID";
                                     using (SqlCommand command = new SqlCommand(deleteNecessaryAMaterialQuery, connection))
                                     {
@@ -799,7 +774,6 @@ namespace АРМ_Швейная_фабрика
                                     }
                                 }
 
-                                // Удаление связанных данных из таблицы technological_process
                                 string deleteTechnologicalProcessQuery = "DELETE FROM technological_process WHERE route_ID = @RouteID";
                                 using (SqlCommand command = new SqlCommand(deleteTechnologicalProcessQuery, connection))
                                 {
@@ -808,7 +782,6 @@ namespace АРМ_Швейная_фабрика
                                 }
                             }
 
-                            // Удаление связанных данных из таблицы technological_route
                             string deleteRoutesQuery = "DELETE FROM technological_route WHERE product_ID = @ProductID";
                             using (SqlCommand command = new SqlCommand(deleteRoutesQuery, connection))
                             {
@@ -816,7 +789,6 @@ namespace АРМ_Швейная_фабрика
                                 command.ExecuteNonQuery();
                             }
 
-                            // Удаление самого продукта
                             string deleteProductQuery = "DELETE FROM product WHERE product_ID = @ProductID";
                             using (SqlCommand command = new SqlCommand(deleteProductQuery, connection))
                             {
@@ -835,7 +807,6 @@ namespace АРМ_Швейная_фабрика
                         {
                             connection.Open();
 
-                            // Получаем ID маршрута по его имени
                             string getRouteIDQuery = "SELECT route_ID FROM technological_route WHERE name = @RouteName";
                             int routeID;
                             using (SqlCommand command = new SqlCommand(getRouteIDQuery, connection))
@@ -844,7 +815,6 @@ namespace АРМ_Швейная_фабрика
                                 routeID = (int)command.ExecuteScalar();
                             }
 
-                            // Удаляем связанные данные из таблицы necessary_a_material
                             string deleteNecessaryAMaterialQuery = "DELETE FROM necessary_a_material WHERE ID IN (SELECT ID FROM technological_process WHERE route_ID = @RouteID)";
                             using (SqlCommand command = new SqlCommand(deleteNecessaryAMaterialQuery, connection))
                             {
@@ -852,7 +822,6 @@ namespace АРМ_Швейная_фабрика
                                 command.ExecuteNonQuery();
                             }
 
-                            // Удаляем связанные данные из таблицы necessary_material
                             string deleteNecessaryMaterialQuery = "DELETE FROM necessary_material WHERE route_ID = @RouteID";
                             using (SqlCommand command = new SqlCommand(deleteNecessaryMaterialQuery, connection))
                             {
@@ -860,7 +829,6 @@ namespace АРМ_Швейная_фабрика
                                 command.ExecuteNonQuery();
                             }
 
-                            // Удаляем связанные данные из таблицы technological_process
                             string deleteTechnologicalProcessQuery = "DELETE FROM technological_process WHERE route_ID = @RouteID";
                             using (SqlCommand command = new SqlCommand(deleteTechnologicalProcessQuery, connection))
                             {
@@ -868,7 +836,6 @@ namespace АРМ_Швейная_фабрика
                                 command.ExecuteNonQuery();
                             }
 
-                            // Удаляем сам маршрут
                             string deleteRouteQuery = "DELETE FROM technological_route WHERE route_ID = @RouteID";
                             using (SqlCommand command = new SqlCommand(deleteRouteQuery, connection))
                             {
@@ -983,12 +950,12 @@ namespace АРМ_Швейная_фабрика
         {
             if (e.Node != null && e.Label != null)
             {
-                if (e.Node.Level == 0) 
+                if (e.Node.Level == 0)
                 {
-                    int? productID = e.Node.Tag as int?; 
+                    int? productID = e.Node.Tag as int?;
                     string newName = e.Label;
 
-                    if (productID == null) 
+                    if (productID == null)
                     {
                         string insertQuery = "INSERT INTO product (name) VALUES (@Name); SELECT SCOPE_IDENTITY();";
 
@@ -999,11 +966,12 @@ namespace АРМ_Швейная_фабрика
                                 command.Parameters.AddWithValue("@Name", newName);
 
                                 connection.Open();
-                                productID = Convert.ToInt32(command.ExecuteScalar()); 
+                                productID = Convert.ToInt32(command.ExecuteScalar());
                             }
                         }
                     }
-                    else {
+                    else
+                    {
 
                         string query = "UPDATE product SET name = @Name WHERE product_ID = @ProductID";
 
@@ -1021,9 +989,9 @@ namespace АРМ_Швейная_фабрика
                     }
 
                 }
-                else if (e.Node.Level == 1) 
+                else if (e.Node.Level == 1)
                 {
-                    int? routeID = e.Node.Tag as int?; 
+                    int? routeID = e.Node.Tag as int?;
                     string newName = e.Label;
 
                     int? productID = (e.Node.Parent.Tag as int?) ?? null;
@@ -1080,7 +1048,6 @@ namespace АРМ_Швейная_фабрика
                     mainDGV.Rows[0].Selected = true;
                 }
 
-                // Очистка выделения остальных строк
                 foreach (DataGridViewRow row in mainDGV.Rows)
                 {
                     if (row.Index != 0)
@@ -1098,10 +1065,8 @@ namespace АРМ_Швейная_фабрика
 
                 foreach (DataGridViewCell cell in row.Cells)
                 {
-                    // Проверяем, является ли ячейка комбобоксом
                     if (cell is DataGridViewComboBoxCell comboBoxCell)
                     {
-                        // Проверяем, содержит ли комбобокс искомый текст в выбранном значении
                         if (comboBoxCell.FormattedValue != null && comboBoxCell.FormattedValue.ToString().ToLower().Contains(searchText))
                         {
                             row.Selected = true;
@@ -1109,7 +1074,6 @@ namespace АРМ_Швейная_фабрика
                             break;
                         }
                     }
-                    // Проверяем, содержит ли ячейка искомый текст
                     else if (cell.Value != null && cell.Value.ToString().ToLower().Contains(searchText))
                     {
                         row.Selected = true;
@@ -1124,7 +1088,303 @@ namespace АРМ_Швейная_фабрика
                 }
             }
         }
-    }
 
+        private void FilterBoxDGV_TextChanged(object sender, EventArgs e)
+        {
+            string filterText = filterBoxDGV.Text.ToLower();
+
+            foreach (DataGridViewRow row in mainDGV.Rows)
+            {
+                bool rowVisible = false;
+
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    if (cell is DataGridViewComboBoxCell comboBoxCell)
+                    {
+                        if (comboBoxCell.FormattedValue != null && comboBoxCell.FormattedValue.ToString().ToLower().Contains(filterText))
+                        {
+                            row.Visible = true;
+                            rowVisible = true;
+                            break;
+                        }
+                    }
+                    else if (cell.Value != null && cell.Value.ToString().ToLower().Contains(filterText))
+                    {
+                        row.Visible = true;
+                        rowVisible = true;
+                        break;
+                    }
+                }
+
+                if (!rowVisible)
+                {
+                    row.Visible = false;
+                }
+            }
+        }
+
+        private void WordToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode selectedNode = treeView.SelectedNode;
+            string selectedElement = selectedNode.Text;
+
+            // Создание диалога для выбора пути сохранения файла
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Word файл (*.docx)|*.docx";
+            saveFileDialog.Title = "Выберите место сохранения файла";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = saveFileDialog.FileName;
+
+                // Создание нового документа Word
+                Word.Application wordApp = new Word.Application();
+                Word.Document doc = wordApp.Documents.Add();
+                doc.PageSetup.Orientation = Word.WdOrientation.wdOrientLandscape;
+
+                // Добавление заголовка "Технологическая карта - [name]"
+                Word.Paragraph title = doc.Content.Paragraphs.Add();
+                title.Range.Text = "Технологическая карта - " + selectedElement;
+                title.Range.InsertParagraphAfter();
+
+                // Выполнение SQL-запроса для получения данных
+                DataTable dt = new DataTable();
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string sqlQuery = @"SELECT technological_process.ID, technological_process.name AS Операция, type AS Способ_обработки, time AS Время_с, 
+                                    equip.name AS Оборудование, position.name AS Исполнитель,
+                                    am.name AS Вспомогательный_материал, nam.quantity AS Количество
+                                    FROM technological_process 
+                                    LEFT JOIN equipment equip ON technological_process.equip_ID = equip.equip_ID 
+                                    LEFT JOIN position ON technological_process.position_ID = position.position_ID 
+                                    LEFT JOIN necessary_a_material nam ON technological_process.ID = nam.ID
+                                    LEFT JOIN additional_material am ON nam.a_material_ID = am.a_material_ID
+                                    WHERE route_ID IN (SELECT route_ID FROM technological_route WHERE name = @selectedElement)";
+
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@selectedElement", selectedElement);
+                        connection.Open();
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        adapter.Fill(dt);
+                    }
+                }
+
+                // Добавление таблицы с данными из technological_process и necessary_a_material
+                Word.Table table = doc.Tables.Add(title.Range, dt.Rows.Count + 1, dt.Columns.Count);
+                for (int i = 0; i < dt.Columns.Count; i++)
+                {
+                    table.Cell(1, i + 1).Range.Text = dt.Columns[i].ColumnName;
+                    table.Cell(1, i + 1).Range.Shading.BackgroundPatternColor = Word.WdColor.wdColorGray25; // Изменение цвета фона заголовков
+                }
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    for (int j = 0; j < dt.Columns.Count; j++)
+                    {
+                        table.Cell(i + 2, j + 1).Range.Text = dt.Rows[i][j].ToString();
+                    }
+                }
+
+                // Переименование столбцов
+                table.Columns[1].Cells[1].Range.Text = "Номер";
+                table.Columns[2].Cells[1].Range.Text = "Операция";
+                table.Columns[3].Cells[1].Range.Text = "Способ обработки";
+                table.Columns[4].Cells[1].Range.Text = "Время(с)";
+                table.Columns[5].Cells[1].Range.Text = "Оборудование";
+                table.Columns[6].Cells[1].Range.Text = "Исполнитель";
+                table.Columns[7].Cells[1].Range.Text = "Вспомогательный материал";
+                table.Columns[8].Cells[1].Range.Text = "Количество";
+
+                // Добавление отступа между таблицами
+                Word.Paragraph paragraphSpace = doc.Content.Paragraphs.Add();
+                paragraphSpace.Range.InsertParagraphBefore();
+
+                // Добавление заголовка "Необходимые материалы"
+                Word.Paragraph materialsTitle = doc.Content.Paragraphs.Add();
+                materialsTitle.Range.Text = "Необходимые материалы";
+                materialsTitle.Range.InsertParagraphAfter();
+
+                // Выполнение SQL-запроса для получения данных о необходимых материалах
+                DataTable materialsDt = new DataTable();
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string sqlQuery = @"SELECT material.name AS Сырье, quantity AS Количество
+                                    FROM necessary_material 
+                                    LEFT JOIN material ON necessary_material.material_ID = material.material_ID 
+                                    WHERE route_ID IN (SELECT route_ID FROM technological_route WHERE name = @selectedElement)";
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@selectedElement", selectedElement);
+                        connection.Open();
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        adapter.Fill(materialsDt);
+                    }
+                }
+
+                // Добавление таблицы с данными о необходимых материалах
+                Word.Table materialsTable = doc.Tables.Add(materialsTitle.Range, materialsDt.Rows.Count + 1, materialsDt.Columns.Count);
+                for (int i = 0; i < materialsDt.Columns.Count; i++)
+                {
+                    materialsTable.Cell(1, i + 1).Range.Text = materialsDt.Columns[i].ColumnName;
+                    materialsTable.Cell(1, i + 1).Range.Shading.BackgroundPatternColor = Word.WdColor.wdColorGray25; // Изменение цвета фона заголовков
+                }
+                for (int i = 0; i < materialsDt.Rows.Count; i++)
+                {
+                    for (int j = 0; j < materialsDt.Columns.Count; j++)
+                    {
+                        materialsTable.Cell(i + 2, j + 1).Range.Text = materialsDt.Rows[i][j].ToString();
+                    }
+                }
+
+                // Переименование столбцов в таблице с материалами
+                materialsTable.Columns[1].Cells[1].Range.Text = "Сырье";
+                materialsTable.Columns[2].Cells[1].Range.Text = "Количество";
+
+                // Добавление границ для таблиц
+                table.Borders.Enable = 1; // wdBorderTop, wdBorderLeft, wdBorderBottom, wdBorderRight
+                materialsTable.Borders.Enable = 1; // wdBorderTop, wdBorderLeft, wdBorderBottom, wdBorderRight
+
+                // Сохранение документа
+                doc.SaveAs2(filePath);
+                doc.Close();
+                wordApp.Quit();
+
+                Console.WriteLine("Отчет успешно сформирован и сохранен по пути: " + filePath);
+            }
+            else
+            {
+                Console.WriteLine("Отменено пользователем.");
+            }
+        }
+
+        private void ExcelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode selectedNode = treeView.SelectedNode;
+            string selectedElement = selectedNode.Text;
+
+            // Создание диалога для выбора пути сохранения файла
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Excel файл (*.xlsx)|*.xlsx";
+            saveFileDialog.Title = "Выберите место сохранения файла";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = saveFileDialog.FileName;
+
+                // Создание нового документа Excel
+                Excel.Application excelApp = new Excel.Application();
+                Excel.Workbook workbook = excelApp.Workbooks.Add();
+                Excel.Worksheet worksheet = workbook.ActiveSheet;
+
+                // Добавление заголовка "Технологическая карта - [name]"
+                worksheet.Cells[1, 1] = "Технологическая карта - " + selectedElement;
+
+                // Выполнение SQL-запроса для получения данных
+                DataTable dt = new DataTable();
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string sqlQuery = @"SELECT technological_process.ID, technological_process.name AS Операция, type AS Способ_обработки, time AS Время_с, 
+                            equip.name AS Оборудование, position.name AS Исполнитель,
+                            am.name AS Вспомогательный_материал, nam.quantity AS Количество
+                            FROM technological_process 
+                            LEFT JOIN equipment equip ON technological_process.equip_ID = equip.equip_ID 
+                            LEFT JOIN position ON technological_process.position_ID = position.position_ID 
+                            LEFT JOIN necessary_a_material nam ON technological_process.ID = nam.ID
+                            LEFT JOIN additional_material am ON nam.a_material_ID = am.a_material_ID
+                            WHERE route_ID IN (SELECT route_ID FROM technological_route WHERE name = @selectedElement)";
+
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@selectedElement", selectedElement);
+                        connection.Open();
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        adapter.Fill(dt);
+                    }
+                }
+
+                // Добавление таблицы с данными из technological_process и necessary_a_material
+                for (int i = 0; i < dt.Columns.Count; i++)
+                {
+                    worksheet.Cells[3, i + 1] = dt.Columns[i].ColumnName;
+                }
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    for (int j = 0; j < dt.Columns.Count; j++)
+                    {
+                        worksheet.Cells[i + 4, j + 1] = dt.Rows[i][j].ToString();
+                    }
+                }
+
+                // Переименование столбцов
+                worksheet.Cells[3, 1] = "Номер";
+                worksheet.Cells[3, 2] = "Операция";
+                worksheet.Cells[3, 3] = "Способ обработки";
+                worksheet.Cells[3, 4] = "Время(с)";
+                worksheet.Cells[3, 5] = "Оборудование";
+                worksheet.Cells[3, 6] = "Исполнитель";
+                worksheet.Cells[3, 7] = "Вспомогательный материал";
+                worksheet.Cells[3, 8] = "Количество";
+
+                // Добавление отступа между таблицами
+                Excel.Range range = worksheet.Range[worksheet.Cells[dt.Rows.Count + 5, 1], worksheet.Cells[dt.Rows.Count + 5, dt.Columns.Count]];
+                range.Merge();
+                range.Value = "Необходимые материалы";
+
+                // Выполнение SQL-запроса для получения данных о необходимых материалах
+                DataTable materialsDt = new DataTable();
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string sqlQuery = @"SELECT material.name AS Сырье, quantity AS Количество
+                            FROM necessary_material 
+                            LEFT JOIN material ON necessary_material.material_ID = material.material_ID 
+                            WHERE route_ID IN (SELECT route_ID FROM technological_route WHERE name = @selectedElement)";
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@selectedElement", selectedElement);
+                        connection.Open();
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        adapter.Fill(materialsDt);
+                    }
+                }
+
+                // Добавление таблицы с данными о необходимых материалах
+                for (int i = 0; i < materialsDt.Columns.Count; i++)
+                {
+                    worksheet.Cells[dt.Rows.Count + 6, i + 1] = materialsDt.Columns[i].ColumnName;
+                }
+                for (int i = 0; i < materialsDt.Rows.Count; i++)
+                {
+                    for (int j = 0; j < materialsDt.Columns.Count; j++)
+                    {
+                        worksheet.Cells[i + dt.Rows.Count + 7, j + 1] = materialsDt.Rows[i][j].ToString();
+                    }
+                }
+
+                // Переименование столбцов в таблице с материалами
+                worksheet.Cells[dt.Rows.Count + 6, 1] = "Сырье";
+                worksheet.Cells[dt.Rows.Count + 6, 2] = "Количество";
+
+                // Автоподгон ширины ячеек
+                worksheet.Columns.AutoFit();
+
+                // Сохранение документа
+                workbook.SaveAs(filePath);
+                workbook.Close();
+                excelApp.Quit();
+
+                Console.WriteLine("Отчет успешно сформирован и сохранен по пути: " + filePath);
+            }
+            else
+            {
+                Console.WriteLine("Отменено пользователем.");
+            }
+        }
+    }
 }
+   
+
+
+
+
+
 
