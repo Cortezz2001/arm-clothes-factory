@@ -29,6 +29,7 @@ namespace АРМ_Швейная_фабрика
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point((Screen.PrimaryScreen.Bounds.Width - this.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - this.Height) / 2);
             TreeFill(treeView);
+            treeView.LabelEdit = true;
         }
 
         private void CloseFormBtn_Click(object sender, EventArgs e)
@@ -68,7 +69,7 @@ namespace АРМ_Швейная_фабрика
                 TreeNode productNode = tree.Nodes.Add(dr_product["name"].ToString());
                 productNode.ImageKey = "folder.png";
                 productNode.SelectedImageKey = "folder.png";
-
+                productNode.Tag = dr_product["product_ID"]; // Устанавливаем Tag для продукта
 
                 DataTable dt_tech_routes = new DataTable();
                 SqlDataAdapter da_tech_routes = new SqlDataAdapter("SELECT * FROM technological_route WHERE product_ID = " + dr_product["product_ID"].ToString(), connectionString);
@@ -79,8 +80,7 @@ namespace АРМ_Швейная_фабрика
                     TreeNode tech_route_Node = productNode.Nodes.Add(dr_node["name"].ToString());
                     tech_route_Node.ImageKey = "route.png";
                     tech_route_Node.SelectedImageKey = "route.png";
-
-
+                    tech_route_Node.Tag = dr_node["route_ID"]; // Устанавливаем Tag для маршрута
                 }
             }
             treeView.ExpandAll();
@@ -92,6 +92,7 @@ namespace АРМ_Швейная_фабрика
             {
                 string tech_route_name = treeView.SelectedNode.Text;
                 technology_name.Text = "Технология: " + tech_route_name;
+
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
@@ -463,32 +464,6 @@ namespace АРМ_Швейная_фабрика
             AddTechRouteForm.Show();
         }
 
-        //private void SaveProcessToDatabase(DataTable dataTable)
-        //{
-        //    using (SqlConnection connection = new SqlConnection(connectionString))
-        //    {
-        //        connection.Open();
-        //        string query = "INSERT INTO technological_process (name, type, time, normatives, route_ID, equip_ID, position_ID) " +
-        //                       "VALUES (@Name, @Type, @Time, @Normatives, @RouteID, @EquipID, @PositionID)";
-
-        //        foreach (DataRow row in dataTable.Rows)
-        //        {
-        //            using (SqlCommand command = new SqlCommand(query, connection))
-        //            {
-        //                command.Parameters.AddWithValue("@Name", row["name"]);
-        //                command.Parameters.AddWithValue("@Type", row["type"]);
-        //                command.Parameters.AddWithValue("@Time", row["time"]);
-        //                command.Parameters.AddWithValue("@Normatives", row["normatives"]);
-        //                command.Parameters.AddWithValue("@RouteID", row["route_ID"]);
-        //                command.Parameters.AddWithValue("@EquipID", row["equip_ID"]);
-        //                command.Parameters.AddWithValue("@PositionID", row["position_ID"]);
-
-        //                command.ExecuteNonQuery();
-        //            }
-        //        }
-        //    }
-        //}
-
         private void AddMainBtn_Click(object sender, EventArgs e)
         {
             if (treeView.SelectedNode != null && treeView.SelectedNode.Level == 1)
@@ -742,41 +717,131 @@ namespace АРМ_Швейная_фабрика
         {
             if (treeView.SelectedNode != null)
             {
-                if (treeView.SelectedNode.Level == 0) // Удаление продукта и связанных данных
-                {
-                    string productName = treeView.SelectedNode.Text;
-
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                string itemName = treeView.SelectedNode.Text;
+                DialogResult result = MessageBox.Show($"Вы действительно хотите удалить \"{itemName}\"?", "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes) { 
+                    if (treeView.SelectedNode.Level == 0) // Удаление продукта и связанных данных
                     {
-                        connection.Open();
+                        string productName = treeView.SelectedNode.Text;
 
-                        // Получаем ID продукта по его имени
-                        string getProductIDQuery = "SELECT product_ID FROM product WHERE name = @ProductName";
-                        int productID;
-                        using (SqlCommand command = new SqlCommand(getProductIDQuery, connection))
+                        using (SqlConnection connection = new SqlConnection(connectionString))
                         {
-                            command.Parameters.AddWithValue("@ProductName", productName);
-                            productID = (int)command.ExecuteScalar();
-                        }
+                            connection.Open();
 
-                        // Получаем все связанные маршруты для данного продукта
-                        string getRoutesQuery = "SELECT route_ID FROM technological_route WHERE product_ID = @ProductID";
-                        List<int> routeIDs = new List<int>();
-                        using (SqlCommand command = new SqlCommand(getRoutesQuery, connection))
-                        {
-                            command.Parameters.AddWithValue("@ProductID", productID);
-                            using (SqlDataReader reader = command.ExecuteReader())
+                            // Получаем ID продукта по его имени
+                            string getProductIDQuery = "SELECT product_ID FROM product WHERE name = @ProductName";
+                            int productID;
+                            using (SqlCommand command = new SqlCommand(getProductIDQuery, connection))
                             {
-                                while (reader.Read())
+                                command.Parameters.AddWithValue("@ProductName", productName);
+                                productID = (int)command.ExecuteScalar();
+                            }
+
+                            // Получаем все связанные маршруты для данного продукта
+                            string getRoutesQuery = "SELECT route_ID FROM technological_route WHERE product_ID = @ProductID";
+                            List<int> routeIDs = new List<int>();
+                            using (SqlCommand command = new SqlCommand(getRoutesQuery, connection))
+                            {
+                                command.Parameters.AddWithValue("@ProductID", productID);
+                                using (SqlDataReader reader = command.ExecuteReader())
                                 {
-                                    routeIDs.Add(reader.GetInt32(0));
+                                    while (reader.Read())
+                                    {
+                                        routeIDs.Add(reader.GetInt32(0));
+                                    }
                                 }
+                            }
+
+                            foreach (int routeID in routeIDs)
+                            {
+                                // Удаление связанных данных из таблицы necessary_material
+                                string deleteNecessaryMaterialQuery = "DELETE FROM necessary_material WHERE route_ID = @RouteID";
+                                using (SqlCommand command = new SqlCommand(deleteNecessaryMaterialQuery, connection))
+                                {
+                                    command.Parameters.AddWithValue("@RouteID", routeID);
+                                    command.ExecuteNonQuery();
+                                }
+
+                                // Получаем все связанные процессы для данного маршрута
+                                string getProcessesQuery = "SELECT ID FROM technological_process WHERE route_ID = @RouteID";
+                                List<int> processIDs = new List<int>();
+                                using (SqlCommand command = new SqlCommand(getProcessesQuery, connection))
+                                {
+                                    command.Parameters.AddWithValue("@RouteID", routeID);
+                                    using (SqlDataReader reader = command.ExecuteReader())
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            processIDs.Add(reader.GetInt32(0));
+                                        }
+                                    }
+                                }
+
+                                foreach (int processID in processIDs)
+                                {
+                                    // Удаление связанных данных из таблицы necessary_a_material
+                                    string deleteNecessaryAMaterialQuery = "DELETE FROM necessary_a_material WHERE ID = @ProcessID";
+                                    using (SqlCommand command = new SqlCommand(deleteNecessaryAMaterialQuery, connection))
+                                    {
+                                        command.Parameters.AddWithValue("@ProcessID", processID);
+                                        command.ExecuteNonQuery();
+                                    }
+                                }
+
+                                // Удаление связанных данных из таблицы technological_process
+                                string deleteTechnologicalProcessQuery = "DELETE FROM technological_process WHERE route_ID = @RouteID";
+                                using (SqlCommand command = new SqlCommand(deleteTechnologicalProcessQuery, connection))
+                                {
+                                    command.Parameters.AddWithValue("@RouteID", routeID);
+                                    command.ExecuteNonQuery();
+                                }
+                            }
+
+                            // Удаление связанных данных из таблицы technological_route
+                            string deleteRoutesQuery = "DELETE FROM technological_route WHERE product_ID = @ProductID";
+                            using (SqlCommand command = new SqlCommand(deleteRoutesQuery, connection))
+                            {
+                                command.Parameters.AddWithValue("@ProductID", productID);
+                                command.ExecuteNonQuery();
+                            }
+
+                            // Удаление самого продукта
+                            string deleteProductQuery = "DELETE FROM product WHERE product_ID = @ProductID";
+                            using (SqlCommand command = new SqlCommand(deleteProductQuery, connection))
+                            {
+                                command.Parameters.AddWithValue("@ProductID", productID);
+                                command.ExecuteNonQuery();
                             }
                         }
 
-                        foreach (int routeID in routeIDs)
+                        treeView.SelectedNode.Remove();
+                    }
+                    else if (treeView.SelectedNode.Level == 1) // Удаление маршрута и связанных данных
+                    {
+                        string routeName = treeView.SelectedNode.Text;
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
                         {
-                            // Удаление связанных данных из таблицы necessary_material
+                            connection.Open();
+
+                            // Получаем ID маршрута по его имени
+                            string getRouteIDQuery = "SELECT route_ID FROM technological_route WHERE name = @RouteName";
+                            int routeID;
+                            using (SqlCommand command = new SqlCommand(getRouteIDQuery, connection))
+                            {
+                                command.Parameters.AddWithValue("@RouteName", routeName);
+                                routeID = (int)command.ExecuteScalar();
+                            }
+
+                            // Удаляем связанные данные из таблицы necessary_a_material
+                            string deleteNecessaryAMaterialQuery = "DELETE FROM necessary_a_material WHERE ID IN (SELECT ID FROM technological_process WHERE route_ID = @RouteID)";
+                            using (SqlCommand command = new SqlCommand(deleteNecessaryAMaterialQuery, connection))
+                            {
+                                command.Parameters.AddWithValue("@RouteID", routeID);
+                                command.ExecuteNonQuery();
+                            }
+
+                            // Удаляем связанные данные из таблицы necessary_material
                             string deleteNecessaryMaterialQuery = "DELETE FROM necessary_material WHERE route_ID = @RouteID";
                             using (SqlCommand command = new SqlCommand(deleteNecessaryMaterialQuery, connection))
                             {
@@ -784,111 +849,168 @@ namespace АРМ_Швейная_фабрика
                                 command.ExecuteNonQuery();
                             }
 
-                            // Получаем все связанные процессы для данного маршрута
-                            string getProcessesQuery = "SELECT ID FROM technological_process WHERE route_ID = @RouteID";
-                            List<int> processIDs = new List<int>();
-                            using (SqlCommand command = new SqlCommand(getProcessesQuery, connection))
-                            {
-                                command.Parameters.AddWithValue("@RouteID", routeID);
-                                using (SqlDataReader reader = command.ExecuteReader())
-                                {
-                                    while (reader.Read())
-                                    {
-                                        processIDs.Add(reader.GetInt32(0));
-                                    }
-                                }
-                            }
-
-                            foreach (int processID in processIDs)
-                            {
-                                // Удаление связанных данных из таблицы necessary_a_material
-                                string deleteNecessaryAMaterialQuery = "DELETE FROM necessary_a_material WHERE ID = @ProcessID";
-                                using (SqlCommand command = new SqlCommand(deleteNecessaryAMaterialQuery, connection))
-                                {
-                                    command.Parameters.AddWithValue("@ProcessID", processID);
-                                    command.ExecuteNonQuery();
-                                }
-                            }
-
-                            // Удаление связанных данных из таблицы technological_process
+                            // Удаляем связанные данные из таблицы technological_process
                             string deleteTechnologicalProcessQuery = "DELETE FROM technological_process WHERE route_ID = @RouteID";
                             using (SqlCommand command = new SqlCommand(deleteTechnologicalProcessQuery, connection))
                             {
                                 command.Parameters.AddWithValue("@RouteID", routeID);
                                 command.ExecuteNonQuery();
                             }
+
+                            // Удаляем сам маршрут
+                            string deleteRouteQuery = "DELETE FROM technological_route WHERE route_ID = @RouteID";
+                            using (SqlCommand command = new SqlCommand(deleteRouteQuery, connection))
+                            {
+                                command.Parameters.AddWithValue("@RouteID", routeID);
+                                command.ExecuteNonQuery();
+                            }
                         }
 
-                        // Удаление связанных данных из таблицы technological_route
-                        string deleteRoutesQuery = "DELETE FROM technological_route WHERE product_ID = @ProductID";
-                        using (SqlCommand command = new SqlCommand(deleteRoutesQuery, connection))
-                        {
-                            command.Parameters.AddWithValue("@ProductID", productID);
-                            command.ExecuteNonQuery();
-                        }
-
-                        // Удаление самого продукта
-                        string deleteProductQuery = "DELETE FROM product WHERE product_ID = @ProductID";
-                        using (SqlCommand command = new SqlCommand(deleteProductQuery, connection))
-                        {
-                            command.Parameters.AddWithValue("@ProductID", productID);
-                            command.ExecuteNonQuery();
-                        }
+                        treeView.SelectedNode.Parent.Nodes.Remove(treeView.SelectedNode);
                     }
-
-                    treeView.SelectedNode.Remove();
                 }
-                else if (treeView.SelectedNode.Level == 1) // Удаление маршрута и связанных данных
-                {
-                    string routeName = treeView.SelectedNode.Text;
+            }
+        }
 
+        private void DeleteMainBtn_Click(object sender, EventArgs e)
+        {
+            if (mainDGV.SelectedRows.Count > 0)
+            {
+                int selectedRowID = Convert.ToInt32(mainDGV.SelectedRows[0].Cells["ID"].Value);
+
+                DialogResult result = MessageBox.Show("Вы действительно хотите удалить выбранную запись?", "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         connection.Open();
 
-                        // Получаем ID маршрута по его имени
-                        string getRouteIDQuery = "SELECT route_ID FROM technological_route WHERE name = @RouteName";
-                        int routeID;
-                        using (SqlCommand command = new SqlCommand(getRouteIDQuery, connection))
-                        {
-                            command.Parameters.AddWithValue("@RouteName", routeName);
-                            routeID = (int)command.ExecuteScalar();
-                        }
-
-                        // Удаляем связанные данные из таблицы necessary_a_material
-                        string deleteNecessaryAMaterialQuery = "DELETE FROM necessary_a_material WHERE ID IN (SELECT ID FROM technological_process WHERE route_ID = @RouteID)";
+                        string deleteNecessaryAMaterialQuery = "DELETE FROM necessary_a_material WHERE ID = @SelectedRowID";
                         using (SqlCommand command = new SqlCommand(deleteNecessaryAMaterialQuery, connection))
                         {
-                            command.Parameters.AddWithValue("@RouteID", routeID);
+                            command.Parameters.AddWithValue("@SelectedRowID", selectedRowID);
                             command.ExecuteNonQuery();
                         }
 
-                        // Удаляем связанные данные из таблицы necessary_material
-                        string deleteNecessaryMaterialQuery = "DELETE FROM necessary_material WHERE route_ID = @RouteID";
-                        using (SqlCommand command = new SqlCommand(deleteNecessaryMaterialQuery, connection))
-                        {
-                            command.Parameters.AddWithValue("@RouteID", routeID);
-                            command.ExecuteNonQuery();
-                        }
-
-                        // Удаляем связанные данные из таблицы technological_process
-                        string deleteTechnologicalProcessQuery = "DELETE FROM technological_process WHERE route_ID = @RouteID";
+                        string deleteTechnologicalProcessQuery = "DELETE FROM technological_process WHERE ID = @SelectedRowID";
                         using (SqlCommand command = new SqlCommand(deleteTechnologicalProcessQuery, connection))
                         {
-                            command.Parameters.AddWithValue("@RouteID", routeID);
-                            command.ExecuteNonQuery();
-                        }
-
-                        // Удаляем сам маршрут
-                        string deleteRouteQuery = "DELETE FROM technological_route WHERE route_ID = @RouteID";
-                        using (SqlCommand command = new SqlCommand(deleteRouteQuery, connection))
-                        {
-                            command.Parameters.AddWithValue("@RouteID", routeID);
+                            command.Parameters.AddWithValue("@SelectedRowID", selectedRowID);
                             command.ExecuteNonQuery();
                         }
                     }
 
-                    treeView.SelectedNode.Parent.Nodes.Remove(treeView.SelectedNode);
+                    mainDGV.Rows.RemoveAt(mainDGV.SelectedRows[0].Index);
+                }
+            }
+        }
+
+        private void DeleteMaterialsDGV_Click(object sender, EventArgs e)
+        {
+            if (materialsDGV.SelectedRows.Count > 0)
+            {
+                int selectedRowID = Convert.ToInt32(materialsDGV.SelectedRows[0].Cells["n_material_ID"].Value);
+
+                DialogResult result = MessageBox.Show("Вы действительно хотите удалить выбранную запись?", "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        string deleteNecessaryMaterialQuery = "DELETE FROM necessary_material WHERE n_material_ID = @SelectedRowID";
+                        using (SqlCommand command = new SqlCommand(deleteNecessaryMaterialQuery, connection))
+                        {
+                            command.Parameters.AddWithValue("@SelectedRowID", selectedRowID);
+                            command.ExecuteNonQuery();
+                        }
+                    }
+
+                    materialsDGV.Rows.RemoveAt(materialsDGV.SelectedRows[0].Index);
+                }
+            }
+        }
+
+        private void DeleteAMaterialsDGV_Click(object sender, EventArgs e)
+        {
+            if (a_materialsDGV.SelectedRows.Count > 0)
+            {
+                int selectedRowID = Convert.ToInt32(a_materialsDGV.SelectedRows[0].Cells["n_a_material_ID"].Value);
+
+                DialogResult result = MessageBox.Show("Вы действительно хотите удалить выбранную запись?", "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        string deleteNecessaryAMaterialQuery = "DELETE FROM necessary_a_material WHERE n_a_material_ID = @SelectedRowID";
+                        using (SqlCommand command = new SqlCommand(deleteNecessaryAMaterialQuery, connection))
+                        {
+                            command.Parameters.AddWithValue("@SelectedRowID", selectedRowID);
+                            command.ExecuteNonQuery();
+                        }
+                    }
+
+                    a_materialsDGV.Rows.RemoveAt(a_materialsDGV.SelectedRows[0].Index);
+                }
+            }
+        }
+
+        private void РедактироватьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView.SelectedNode != null)
+            {
+                treeView.SelectedNode.BeginEdit();
+            }
+        }
+
+        private void TreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+            if (e.Node != null && e.Label != null)
+            {
+                if (e.Node.Level == 0) // Если выбран уровень продукта
+                {
+                    int productID = (int)e.Node.Tag; // Получаем product_ID из Tag
+                    string newName = e.Label;
+
+                    // Выполнение SQL-запроса для обновления имени продукта в базе данных
+                    string query = "UPDATE product SET name = @Name WHERE product_ID = @ProductID";
+
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            command.Parameters.AddWithValue("@Name", newName);
+                            command.Parameters.AddWithValue("@ProductID", productID);
+
+                            connection.Open();
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+                else if (e.Node.Level == 1) // Если выбран уровень маршрута
+                {
+                    int routeID = (int)e.Node.Tag; // Получаем route_ID из Tag
+                    string newName = e.Label;
+
+                    // Выполнение SQL-запроса для обновления имени маршрута в базе данных
+                    string query = "UPDATE technological_route SET name = @Name WHERE route_ID = @RouteID";
+
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            command.Parameters.AddWithValue("@Name", newName);
+                            command.Parameters.AddWithValue("@RouteID", routeID);
+
+                            connection.Open();
+                            command.ExecuteNonQuery();
+                        }
+                    }
                 }
             }
         }

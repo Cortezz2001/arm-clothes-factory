@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle29 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle34 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle35 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle36 = new System.Windows.Forms.DataGridViewCellStyle();
             this.guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(this.components);
             this.closeFormBtn = new Guna.UI2.WinForms.Guna2CircleButton();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
@@ -53,19 +53,22 @@
             this.технологияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.guna2Panel3 = new Guna.UI2.WinForms.Guna2Panel();
             this.addMainBtn = new Guna.UI2.WinForms.Guna2Button();
-            this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
+            this.deleteMainBtn = new Guna.UI2.WinForms.Guna2Button();
             this.guna2TabControl1 = new Guna.UI2.WinForms.Guna2TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.addMaterialsDGV = new Guna.UI2.WinForms.Guna2Button();
-            this.guna2Button4 = new Guna.UI2.WinForms.Guna2Button();
+            this.deleteMaterialsDGV = new Guna.UI2.WinForms.Guna2Button();
             this.materialsDGV = new Guna.UI2.WinForms.Guna2DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.addAMaterialsBtn = new Guna.UI2.WinForms.Guna2Button();
-            this.guna2Button6 = new Guna.UI2.WinForms.Guna2Button();
+            this.deleteAMaterialsDGV = new Guna.UI2.WinForms.Guna2Button();
             this.a_materialsDGV = new Guna.UI2.WinForms.Guna2DataGridView();
             this.mainDGV = new Guna.UI2.WinForms.Guna2DataGridView();
             this.technology_name = new System.Windows.Forms.Label();
             this.удалитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.guna2TextBox1 = new Guna.UI2.WinForms.Guna2TextBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.редактироватьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.guna2Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.TopPanel.SuspendLayout();
@@ -77,6 +80,7 @@
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.a_materialsDGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mainDGV)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // guna2BorderlessForm1
@@ -136,12 +140,12 @@
             this.searchBoxTV.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.searchBoxTV.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.searchBoxTV.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.searchBoxTV.Location = new System.Drawing.Point(34, 6);
+            this.searchBoxTV.Location = new System.Drawing.Point(31, 6);
             this.searchBoxTV.Name = "searchBoxTV";
             this.searchBoxTV.PasswordChar = '\0';
             this.searchBoxTV.PlaceholderText = "";
             this.searchBoxTV.SelectedText = "";
-            this.searchBoxTV.Size = new System.Drawing.Size(201, 21);
+            this.searchBoxTV.Size = new System.Drawing.Size(204, 21);
             this.searchBoxTV.TabIndex = 1;
             this.searchBoxTV.TextChanged += new System.EventHandler(this.SearchBoxTV_TextChanged);
             // 
@@ -155,6 +159,7 @@
             this.treeView.SelectedImageIndex = 0;
             this.treeView.Size = new System.Drawing.Size(232, 475);
             this.treeView.TabIndex = 0;
+            this.treeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
             this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterSelect);
             this.treeView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDoubleClick);
             // 
@@ -186,11 +191,12 @@
             this.menuStrip.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.добавитьToolStripMenuItem,
-            this.удалитьToolStripMenuItem});
+            this.удалитьToolStripMenuItem,
+            this.редактироватьToolStripMenuItem});
             this.menuStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.menuStrip.Location = new System.Drawing.Point(0, 43);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(273, 25);
+            this.menuStrip.Size = new System.Drawing.Size(261, 25);
             this.menuStrip.TabIndex = 8;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -210,7 +216,7 @@
             this.изделиеtoolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(50)))));
             this.изделиеtoolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.изделиеtoolStripMenuItem.Name = "изделиеtoolStripMenuItem";
-            this.изделиеtoolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.изделиеtoolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.изделиеtoolStripMenuItem.Text = "Изделие";
             this.изделиеtoolStripMenuItem.Click += new System.EventHandler(this.ИзделиеtoolStripMenuItem_Click);
             // 
@@ -219,14 +225,16 @@
             this.технологияToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(50)))));
             this.технологияToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.технологияToolStripMenuItem.Name = "технологияToolStripMenuItem";
-            this.технологияToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.технологияToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.технологияToolStripMenuItem.Text = "Технология";
             this.технологияToolStripMenuItem.Click += new System.EventHandler(this.ТехнологияToolStripMenuItem_Click);
             // 
             // guna2Panel3
             // 
+            this.guna2Panel3.Controls.Add(this.pictureBox2);
             this.guna2Panel3.Controls.Add(this.addMainBtn);
-            this.guna2Panel3.Controls.Add(this.guna2Button1);
+            this.guna2Panel3.Controls.Add(this.guna2TextBox1);
+            this.guna2Panel3.Controls.Add(this.deleteMainBtn);
             this.guna2Panel3.Controls.Add(this.guna2TabControl1);
             this.guna2Panel3.Controls.Add(this.mainDGV);
             this.guna2Panel3.Location = new System.Drawing.Point(256, 71);
@@ -251,21 +259,22 @@
             this.addMainBtn.TabIndex = 4;
             this.addMainBtn.Click += new System.EventHandler(this.AddMainBtn_Click);
             // 
-            // guna2Button1
+            // deleteMainBtn
             // 
-            this.guna2Button1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("guna2Button1.BackgroundImage")));
-            this.guna2Button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.guna2Button1.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button1.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button1.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2Button1.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2Button1.FillColor = System.Drawing.Color.Empty;
-            this.guna2Button1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.guna2Button1.ForeColor = System.Drawing.Color.White;
-            this.guna2Button1.Location = new System.Drawing.Point(896, 3);
-            this.guna2Button1.Name = "guna2Button1";
-            this.guna2Button1.Size = new System.Drawing.Size(27, 24);
-            this.guna2Button1.TabIndex = 4;
+            this.deleteMainBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("deleteMainBtn.BackgroundImage")));
+            this.deleteMainBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.deleteMainBtn.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.deleteMainBtn.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.deleteMainBtn.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.deleteMainBtn.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.deleteMainBtn.FillColor = System.Drawing.Color.Empty;
+            this.deleteMainBtn.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.deleteMainBtn.ForeColor = System.Drawing.Color.White;
+            this.deleteMainBtn.Location = new System.Drawing.Point(896, 3);
+            this.deleteMainBtn.Name = "deleteMainBtn";
+            this.deleteMainBtn.Size = new System.Drawing.Size(27, 24);
+            this.deleteMainBtn.TabIndex = 4;
+            this.deleteMainBtn.Click += new System.EventHandler(this.DeleteMainBtn_Click);
             // 
             // guna2TabControl1
             // 
@@ -301,7 +310,7 @@
             // 
             this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(50)))));
             this.tabPage1.Controls.Add(this.addMaterialsDGV);
-            this.tabPage1.Controls.Add(this.guna2Button4);
+            this.tabPage1.Controls.Add(this.deleteMaterialsDGV);
             this.tabPage1.Controls.Add(this.materialsDGV);
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Name = "tabPage1";
@@ -327,46 +336,47 @@
             this.addMaterialsDGV.TabIndex = 4;
             this.addMaterialsDGV.Click += new System.EventHandler(this.AddMaterialsDGV_Click);
             // 
-            // guna2Button4
+            // deleteMaterialsDGV
             // 
-            this.guna2Button4.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("guna2Button4.BackgroundImage")));
-            this.guna2Button4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.guna2Button4.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button4.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button4.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2Button4.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2Button4.FillColor = System.Drawing.Color.Empty;
-            this.guna2Button4.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.guna2Button4.ForeColor = System.Drawing.Color.White;
-            this.guna2Button4.Location = new System.Drawing.Point(882, 33);
-            this.guna2Button4.Name = "guna2Button4";
-            this.guna2Button4.Size = new System.Drawing.Size(27, 24);
-            this.guna2Button4.TabIndex = 4;
+            this.deleteMaterialsDGV.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("deleteMaterialsDGV.BackgroundImage")));
+            this.deleteMaterialsDGV.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.deleteMaterialsDGV.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.deleteMaterialsDGV.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.deleteMaterialsDGV.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.deleteMaterialsDGV.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.deleteMaterialsDGV.FillColor = System.Drawing.Color.Empty;
+            this.deleteMaterialsDGV.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.deleteMaterialsDGV.ForeColor = System.Drawing.Color.White;
+            this.deleteMaterialsDGV.Location = new System.Drawing.Point(882, 33);
+            this.deleteMaterialsDGV.Name = "deleteMaterialsDGV";
+            this.deleteMaterialsDGV.Size = new System.Drawing.Size(27, 24);
+            this.deleteMaterialsDGV.TabIndex = 4;
+            this.deleteMaterialsDGV.Click += new System.EventHandler(this.DeleteMaterialsDGV_Click);
             // 
             // materialsDGV
             // 
             this.materialsDGV.AllowUserToAddRows = false;
             this.materialsDGV.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle28.BackColor = System.Drawing.Color.White;
-            this.materialsDGV.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle28;
-            dataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle29.BackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle29.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle29.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle29.SelectionBackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle29.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle29.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.materialsDGV.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle29;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.White;
+            this.materialsDGV.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = System.Drawing.Color.DodgerBlue;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.DodgerBlue;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.materialsDGV.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
             this.materialsDGV.ColumnHeadersHeight = 4;
             this.materialsDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle30.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
-            dataGridViewCellStyle30.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle30.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle30.SelectionBackColor = System.Drawing.Color.LightSkyBlue;
-            dataGridViewCellStyle30.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle30.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.materialsDGV.DefaultCellStyle = dataGridViewCellStyle30;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.LightSkyBlue;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.materialsDGV.DefaultCellStyle = dataGridViewCellStyle12;
             this.materialsDGV.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
             this.materialsDGV.Location = new System.Drawing.Point(0, 0);
             this.materialsDGV.Name = "materialsDGV";
@@ -402,7 +412,7 @@
             // 
             this.tabPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(50)))));
             this.tabPage2.Controls.Add(this.addAMaterialsBtn);
-            this.tabPage2.Controls.Add(this.guna2Button6);
+            this.tabPage2.Controls.Add(this.deleteAMaterialsDGV);
             this.tabPage2.Controls.Add(this.a_materialsDGV);
             this.tabPage2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabPage2.Location = new System.Drawing.Point(4, 29);
@@ -429,46 +439,47 @@
             this.addAMaterialsBtn.TabIndex = 5;
             this.addAMaterialsBtn.Click += new System.EventHandler(this.AddAMaterialsBtn_Click);
             // 
-            // guna2Button6
+            // deleteAMaterialsDGV
             // 
-            this.guna2Button6.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("guna2Button6.BackgroundImage")));
-            this.guna2Button6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.guna2Button6.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button6.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button6.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2Button6.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2Button6.FillColor = System.Drawing.Color.Empty;
-            this.guna2Button6.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.guna2Button6.ForeColor = System.Drawing.Color.White;
-            this.guna2Button6.Location = new System.Drawing.Point(882, 33);
-            this.guna2Button6.Name = "guna2Button6";
-            this.guna2Button6.Size = new System.Drawing.Size(27, 24);
-            this.guna2Button6.TabIndex = 6;
+            this.deleteAMaterialsDGV.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("deleteAMaterialsDGV.BackgroundImage")));
+            this.deleteAMaterialsDGV.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.deleteAMaterialsDGV.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.deleteAMaterialsDGV.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.deleteAMaterialsDGV.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.deleteAMaterialsDGV.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.deleteAMaterialsDGV.FillColor = System.Drawing.Color.Empty;
+            this.deleteAMaterialsDGV.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.deleteAMaterialsDGV.ForeColor = System.Drawing.Color.White;
+            this.deleteAMaterialsDGV.Location = new System.Drawing.Point(882, 33);
+            this.deleteAMaterialsDGV.Name = "deleteAMaterialsDGV";
+            this.deleteAMaterialsDGV.Size = new System.Drawing.Size(27, 24);
+            this.deleteAMaterialsDGV.TabIndex = 6;
+            this.deleteAMaterialsDGV.Click += new System.EventHandler(this.DeleteAMaterialsDGV_Click);
             // 
             // a_materialsDGV
             // 
             this.a_materialsDGV.AllowUserToAddRows = false;
             this.a_materialsDGV.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle31.BackColor = System.Drawing.Color.White;
-            this.a_materialsDGV.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle31;
-            dataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle32.BackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle32.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle32.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle32.SelectionBackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle32.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle32.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.a_materialsDGV.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle32;
+            dataGridViewCellStyle13.BackColor = System.Drawing.Color.White;
+            this.a_materialsDGV.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle14.BackColor = System.Drawing.Color.DodgerBlue;
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle14.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.Color.DodgerBlue;
+            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.a_materialsDGV.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle14;
             this.a_materialsDGV.ColumnHeadersHeight = 4;
             this.a_materialsDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle33.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle33.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
-            dataGridViewCellStyle33.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle33.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle33.SelectionBackColor = System.Drawing.Color.LightSkyBlue;
-            dataGridViewCellStyle33.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle33.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.a_materialsDGV.DefaultCellStyle = dataGridViewCellStyle33;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
+            dataGridViewCellStyle15.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle15.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.Color.LightSkyBlue;
+            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.a_materialsDGV.DefaultCellStyle = dataGridViewCellStyle15;
             this.a_materialsDGV.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
             this.a_materialsDGV.Location = new System.Drawing.Point(0, 0);
             this.a_materialsDGV.Name = "a_materialsDGV";
@@ -504,26 +515,26 @@
             // 
             this.mainDGV.AllowUserToAddRows = false;
             this.mainDGV.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle34.BackColor = System.Drawing.Color.White;
-            this.mainDGV.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle34;
-            dataGridViewCellStyle35.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle35.BackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle35.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle35.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle35.SelectionBackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle35.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle35.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.mainDGV.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle35;
+            dataGridViewCellStyle16.BackColor = System.Drawing.Color.White;
+            this.mainDGV.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle17.BackColor = System.Drawing.Color.DodgerBlue;
+            dataGridViewCellStyle17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle17.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.Color.DodgerBlue;
+            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.mainDGV.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle17;
             this.mainDGV.ColumnHeadersHeight = 30;
             this.mainDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle36.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle36.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
-            dataGridViewCellStyle36.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle36.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle36.SelectionBackColor = System.Drawing.Color.LightSkyBlue;
-            dataGridViewCellStyle36.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle36.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.mainDGV.DefaultCellStyle = dataGridViewCellStyle36;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle18.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
+            dataGridViewCellStyle18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle18.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.Color.LightSkyBlue;
+            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.mainDGV.DefaultCellStyle = dataGridViewCellStyle18;
             this.mainDGV.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
             this.mainDGV.Location = new System.Drawing.Point(0, 33);
             this.mainDGV.Name = "mainDGV";
@@ -575,6 +586,46 @@
             this.удалитьToolStripMenuItem.Text = "Удалить";
             this.удалитьToolStripMenuItem.Click += new System.EventHandler(this.УдалитьToolStripMenuItem_Click);
             // 
+            // guna2TextBox1
+            // 
+            this.guna2TextBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.guna2TextBox1.DefaultText = "";
+            this.guna2TextBox1.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.guna2TextBox1.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.guna2TextBox1.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.guna2TextBox1.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.guna2TextBox1.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.guna2TextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.guna2TextBox1.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.guna2TextBox1.Location = new System.Drawing.Point(31, 6);
+            this.guna2TextBox1.Name = "guna2TextBox1";
+            this.guna2TextBox1.PasswordChar = '\0';
+            this.guna2TextBox1.PlaceholderText = "";
+            this.guna2TextBox1.SelectedText = "";
+            this.guna2TextBox1.Size = new System.Drawing.Size(826, 21);
+            this.guna2TextBox1.TabIndex = 1;
+            this.guna2TextBox1.TextChanged += new System.EventHandler(this.SearchBoxTV_TextChanged);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(3, 6);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(25, 21);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 2;
+            this.pictureBox2.TabStop = false;
+            // 
+            // редактироватьToolStripMenuItem
+            // 
+            this.редактироватьToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.редактироватьToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.редактироватьToolStripMenuItem.Name = "редактироватьToolStripMenuItem";
+            this.редактироватьToolStripMenuItem.Size = new System.Drawing.Size(108, 21);
+            this.редактироватьToolStripMenuItem.Text = "Редактировать";
+            this.редактироватьToolStripMenuItem.Click += new System.EventHandler(this.РедактироватьToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -601,6 +652,7 @@
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.a_materialsDGV)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mainDGV)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -628,12 +680,15 @@
         private Guna.UI2.WinForms.Guna2DataGridView materialsDGV;
         private System.Windows.Forms.TabPage tabPage2;
         private Guna.UI2.WinForms.Guna2DataGridView a_materialsDGV;
-        private Guna.UI2.WinForms.Guna2Button guna2Button1;
+        private Guna.UI2.WinForms.Guna2Button deleteMainBtn;
         private Guna.UI2.WinForms.Guna2Button addMainBtn;
         private Guna.UI2.WinForms.Guna2Button addMaterialsDGV;
-        private Guna.UI2.WinForms.Guna2Button guna2Button4;
+        private Guna.UI2.WinForms.Guna2Button deleteMaterialsDGV;
         private Guna.UI2.WinForms.Guna2Button addAMaterialsBtn;
-        private Guna.UI2.WinForms.Guna2Button guna2Button6;
+        private Guna.UI2.WinForms.Guna2Button deleteAMaterialsDGV;
         private System.Windows.Forms.ToolStripMenuItem удалитьToolStripMenuItem;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private Guna.UI2.WinForms.Guna2TextBox guna2TextBox1;
+        private System.Windows.Forms.ToolStripMenuItem редактироватьToolStripMenuItem;
     }
 }
