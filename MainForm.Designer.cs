@@ -52,6 +52,10 @@
             this.добавитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.изделиеtoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.технологияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.сырьёToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.вспомогательныеМатериалыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.оборудованиеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.должностьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.удалитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.редактироватьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.отчетToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -175,6 +179,7 @@
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1.Images.SetKeyName(0, "folder.png");
             this.imageList1.Images.SetKeyName(1, "route.png");
+            this.imageList1.Images.SetKeyName(2, "cloth.png");
             // 
             // TopPanel
             // 
@@ -195,7 +200,7 @@
             this.technology_name.AutoSize = true;
             this.technology_name.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.technology_name.ForeColor = System.Drawing.Color.White;
-            this.technology_name.Location = new System.Drawing.Point(12, 19);
+            this.technology_name.Location = new System.Drawing.Point(10, 12);
             this.technology_name.Name = "technology_name";
             this.technology_name.Size = new System.Drawing.Size(0, 15);
             this.technology_name.TabIndex = 2;
@@ -221,7 +226,11 @@
             // 
             this.добавитьToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.изделиеtoolStripMenuItem,
-            this.технологияToolStripMenuItem});
+            this.технологияToolStripMenuItem,
+            this.сырьёToolStripMenuItem,
+            this.вспомогательныеМатериалыToolStripMenuItem,
+            this.оборудованиеToolStripMenuItem,
+            this.должностьToolStripMenuItem});
             this.добавитьToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.добавитьToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.добавитьToolStripMenuItem.Name = "добавитьToolStripMenuItem";
@@ -234,7 +243,7 @@
             this.изделиеtoolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.изделиеtoolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("изделиеtoolStripMenuItem.Image")));
             this.изделиеtoolStripMenuItem.Name = "изделиеtoolStripMenuItem";
-            this.изделиеtoolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.изделиеtoolStripMenuItem.Size = new System.Drawing.Size(252, 22);
             this.изделиеtoolStripMenuItem.Text = "Изделие";
             this.изделиеtoolStripMenuItem.Click += new System.EventHandler(this.ИзделиеtoolStripMenuItem_Click);
             // 
@@ -244,9 +253,49 @@
             this.технологияToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.технологияToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("технологияToolStripMenuItem.Image")));
             this.технологияToolStripMenuItem.Name = "технологияToolStripMenuItem";
-            this.технологияToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.технологияToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
             this.технологияToolStripMenuItem.Text = "Технология";
             this.технологияToolStripMenuItem.Click += new System.EventHandler(this.ТехнологияToolStripMenuItem_Click);
+            // 
+            // сырьёToolStripMenuItem
+            // 
+            this.сырьёToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(50)))));
+            this.сырьёToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.сырьёToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("сырьёToolStripMenuItem.Image")));
+            this.сырьёToolStripMenuItem.Name = "сырьёToolStripMenuItem";
+            this.сырьёToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.сырьёToolStripMenuItem.Text = "Сырьё";
+            this.сырьёToolStripMenuItem.Click += new System.EventHandler(this.СырьёToolStripMenuItem_Click);
+            // 
+            // вспомогательныеМатериалыToolStripMenuItem
+            // 
+            this.вспомогательныеМатериалыToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(50)))));
+            this.вспомогательныеМатериалыToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.вспомогательныеМатериалыToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("вспомогательныеМатериалыToolStripMenuItem.Image")));
+            this.вспомогательныеМатериалыToolStripMenuItem.Name = "вспомогательныеМатериалыToolStripMenuItem";
+            this.вспомогательныеМатериалыToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.вспомогательныеМатериалыToolStripMenuItem.Text = "Вспомогательные материалы";
+            this.вспомогательныеМатериалыToolStripMenuItem.Click += new System.EventHandler(this.ВспомогательныеМатериалыToolStripMenuItem_Click);
+            // 
+            // оборудованиеToolStripMenuItem
+            // 
+            this.оборудованиеToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(50)))));
+            this.оборудованиеToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.оборудованиеToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("оборудованиеToolStripMenuItem.Image")));
+            this.оборудованиеToolStripMenuItem.Name = "оборудованиеToolStripMenuItem";
+            this.оборудованиеToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.оборудованиеToolStripMenuItem.Text = "Оборудование";
+            this.оборудованиеToolStripMenuItem.Click += new System.EventHandler(this.ОборудованиеToolStripMenuItem_Click);
+            // 
+            // должностьToolStripMenuItem
+            // 
+            this.должностьToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(50)))));
+            this.должностьToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.должностьToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("должностьToolStripMenuItem.Image")));
+            this.должностьToolStripMenuItem.Name = "должностьToolStripMenuItem";
+            this.должностьToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.должностьToolStripMenuItem.Text = "Должность";
+            this.должностьToolStripMenuItem.Click += new System.EventHandler(this.ДолжностьToolStripMenuItem_Click);
             // 
             // удалитьToolStripMenuItem
             // 
@@ -740,7 +789,6 @@
         private Guna.UI2.WinForms.Guna2Panel TopPanel;
         private System.Windows.Forms.MenuStrip menuStrip;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel3;
-        private Guna.UI2.WinForms.Guna2DataGridView mainDGV;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.Label technology_name;
         private Guna.UI2.WinForms.Guna2TextBox searchBoxTV;
@@ -749,11 +797,8 @@
         private System.Windows.Forms.ToolStripMenuItem изделиеtoolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem технологияToolStripMenuItem;
         public System.Windows.Forms.TreeView treeView;
-        private Guna.UI2.WinForms.Guna2TabControl guna2TabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private Guna.UI2.WinForms.Guna2DataGridView materialsDGV;
         private System.Windows.Forms.TabPage tabPage2;
-        private Guna.UI2.WinForms.Guna2DataGridView a_materialsDGV;
         private Guna.UI2.WinForms.Guna2Button deleteMainBtn;
         private Guna.UI2.WinForms.Guna2Button addMainBtn;
         private Guna.UI2.WinForms.Guna2Button addMaterialsDGV;
@@ -769,5 +814,13 @@
         private System.Windows.Forms.ToolStripMenuItem отчетToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wordToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem excelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem сырьёToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem вспомогательныеМатериалыToolStripMenuItem;
+        public Guna.UI2.WinForms.Guna2DataGridView mainDGV;
+        public Guna.UI2.WinForms.Guna2TabControl guna2TabControl1;
+        public Guna.UI2.WinForms.Guna2DataGridView materialsDGV;
+        public Guna.UI2.WinForms.Guna2DataGridView a_materialsDGV;
+        private System.Windows.Forms.ToolStripMenuItem оборудованиеToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem должностьToolStripMenuItem;
     }
 }

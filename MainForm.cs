@@ -13,7 +13,7 @@ namespace АРМ_Швейная_фабрика
     {
         private string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\D диск\АРМ швейная фабрика\АРМ Швейная фабрика\DB.mdf;Integrated Security=True";
         private bool isDragging = false;
-        bool comboBoxesAdded = false;
+        public bool comboBoxesAdded = false;
         private int mouseX;
         private int mouseY;
 
@@ -65,8 +65,8 @@ namespace АРМ_Швейная_фабрика
             foreach (DataRow dr_product in dt_products.Rows)
             {
                 TreeNode productNode = tree.Nodes.Add(dr_product["name"].ToString());
-                productNode.ImageKey = "folder.png";
-                productNode.SelectedImageKey = "folder.png";
+                productNode.ImageKey = "cloth.png";
+                productNode.SelectedImageKey = "cloth.png";
                 productNode.Tag = dr_product["product_ID"]; // Устанавливаем Tag для продукта
 
                 DataTable dt_tech_routes = new DataTable();
@@ -135,7 +135,7 @@ namespace АРМ_Швейная_фабрика
 
 
                             DataGridViewComboBoxColumn positionColumn = new DataGridViewComboBoxColumn();
-                            positionColumn.HeaderText = "Позиция";
+                            positionColumn.HeaderText = "Исполнитель";
                             positionColumn.Name = "positionColumn";
                             positionColumn.DataSource = GetPositions(); // Загрузка данных из таблицы position
                             positionColumn.DataPropertyName = "position_ID";
@@ -1030,6 +1030,10 @@ namespace АРМ_Швейная_фабрика
                     }
                 }
             }
+            else if (e.Label == null)
+            {
+                return;
+            }
             else
             {
                 MessageBox.Show("Элемент не может быть пустым", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1396,6 +1400,30 @@ namespace АРМ_Швейная_фабрика
             {
                 Console.WriteLine("Отменено пользователем.");
             }
+        }
+
+        private void СырьёToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddMaterialForm AddMaterialForm = new AddMaterialForm(this);
+            AddMaterialForm.Show();
+        }
+
+        private void ВспомогательныеМатериалыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddAdditionalMaterialForm AddAdditionalMaterialForm = new AddAdditionalMaterialForm(this);
+            AddAdditionalMaterialForm.Show();
+        }
+
+        private void ОборудованиеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddEquipmentForm AddEquipmentForm = new AddEquipmentForm(this);
+            AddEquipmentForm.Show();
+        }
+
+        private void ДолжностьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddPositionForm AddPositionForm = new AddPositionForm(this);
+            AddPositionForm.Show();
         }
     }
 }
