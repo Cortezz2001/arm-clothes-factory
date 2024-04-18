@@ -19,8 +19,8 @@ namespace АРМ_Швейная_фабрика
             //Application.Run(new authForm());
             MainForm mainForm = new MainForm();
             AuthForm authForm = new AuthForm(mainForm);
-            //Application.Run(authForm);
-            Application.Run(mainForm);
+            Application.Run(authForm);
+            //Application.Run(mainForm);
         }
     }
 }

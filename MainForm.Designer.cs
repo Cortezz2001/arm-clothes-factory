@@ -125,7 +125,7 @@
             this.guna2Panel1.Controls.Add(this.treeView);
             this.guna2Panel1.Location = new System.Drawing.Point(12, 71);
             this.guna2Panel1.Name = "guna2Panel1";
-            this.guna2Panel1.Size = new System.Drawing.Size(238, 511);
+            this.guna2Panel1.Size = new System.Drawing.Size(238, 610);
             this.guna2Panel1.TabIndex = 6;
             // 
             // pictureBox1
@@ -167,7 +167,7 @@
             this.treeView.Location = new System.Drawing.Point(3, 33);
             this.treeView.Name = "treeView";
             this.treeView.SelectedImageIndex = 0;
-            this.treeView.Size = new System.Drawing.Size(232, 475);
+            this.treeView.Size = new System.Drawing.Size(232, 574);
             this.treeView.TabIndex = 0;
             this.treeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
             this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterSelect);
@@ -177,9 +177,8 @@
             // 
             this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "folder.png");
+            this.imageList1.Images.SetKeyName(0, "cloth.png");
             this.imageList1.Images.SetKeyName(1, "route.png");
-            this.imageList1.Images.SetKeyName(2, "cloth.png");
             // 
             // TopPanel
             // 
@@ -332,7 +331,7 @@
             this.wordToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.wordToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("wordToolStripMenuItem.Image")));
             this.wordToolStripMenuItem.Name = "wordToolStripMenuItem";
-            this.wordToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.wordToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.wordToolStripMenuItem.Text = "Word";
             this.wordToolStripMenuItem.Click += new System.EventHandler(this.WordToolStripMenuItem_Click);
             // 
@@ -342,7 +341,7 @@
             this.excelToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.excelToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("excelToolStripMenuItem.Image")));
             this.excelToolStripMenuItem.Name = "excelToolStripMenuItem";
-            this.excelToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.excelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.excelToolStripMenuItem.Text = "Excel";
             this.excelToolStripMenuItem.Click += new System.EventHandler(this.ExcelToolStripMenuItem_Click);
             // 
@@ -358,7 +357,7 @@
             this.guna2Panel3.Controls.Add(this.mainDGV);
             this.guna2Panel3.Location = new System.Drawing.Point(256, 71);
             this.guna2Panel3.Name = "guna2Panel3";
-            this.guna2Panel3.Size = new System.Drawing.Size(926, 511);
+            this.guna2Panel3.Size = new System.Drawing.Size(926, 610);
             this.guna2Panel3.TabIndex = 9;
             // 
             // pictureBox3
@@ -463,7 +462,7 @@
             this.guna2TabControl1.Controls.Add(this.tabPage2);
             this.guna2TabControl1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.guna2TabControl1.ItemSize = new System.Drawing.Size(200, 25);
-            this.guna2TabControl1.Location = new System.Drawing.Point(3, 334);
+            this.guna2TabControl1.Location = new System.Drawing.Point(3, 436);
             this.guna2TabControl1.Name = "guna2TabControl1";
             this.guna2TabControl1.SelectedIndex = 0;
             this.guna2TabControl1.Size = new System.Drawing.Size(920, 171);
@@ -550,7 +549,7 @@
             this.materialsDGV.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.materialsDGV.ColumnHeadersHeight = 4;
             this.materialsDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
@@ -653,7 +652,7 @@
             this.a_materialsDGV.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.a_materialsDGV.ColumnHeadersHeight = 4;
             this.a_materialsDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
             dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
@@ -708,7 +707,7 @@
             this.mainDGV.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
             this.mainDGV.ColumnHeadersHeight = 30;
             this.mainDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(249)))));
             dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             dataGridViewCellStyle9.ForeColor = System.Drawing.Color.Black;
@@ -721,7 +720,7 @@
             this.mainDGV.Name = "mainDGV";
             this.mainDGV.RowHeadersVisible = false;
             this.mainDGV.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.mainDGV.Size = new System.Drawing.Size(926, 297);
+            this.mainDGV.Size = new System.Drawing.Size(926, 403);
             this.mainDGV.TabIndex = 0;
             this.mainDGV.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.White;
             this.mainDGV.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
@@ -753,7 +752,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(46)))), ((int)(((byte)(50)))));
-            this.ClientSize = new System.Drawing.Size(1194, 594);
+            this.ClientSize = new System.Drawing.Size(1194, 693);
             this.Controls.Add(this.guna2Panel3);
             this.Controls.Add(this.TopPanel);
             this.Controls.Add(this.menuStrip);

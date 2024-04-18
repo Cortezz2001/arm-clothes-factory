@@ -987,6 +987,8 @@ namespace АРМ_Швейная_фабрика
                             }
                         }
                     }
+                    treeView.Nodes.Clear();
+                    TreeFill(treeView);
 
                 }
                 else if (e.Node.Level == 1)
@@ -1156,21 +1158,24 @@ namespace АРМ_Швейная_фабрика
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     string sqlQuery = @"SELECT 
-                            technological_process.name AS Операция, 
-                            type AS Способ_обработки, 
-                            time AS Время_с, 
-                            equip.name AS Оборудование, 
-                            position.name AS Исполнитель,
-                            am.name AS Вспомогательный_материал, 
-                            nam.quantity AS Количество
-                        FROM 
-                            technological_process 
-                            LEFT JOIN equipment equip ON technological_process.equip_ID = equip.equip_ID 
-                            LEFT JOIN position ON technological_process.position_ID = position.position_ID 
-                            LEFT JOIN necessary_a_material nam ON technological_process.ID = nam.ID
-                            LEFT JOIN additional_material am ON nam.a_material_ID = am.a_material_ID
-                        WHERE 
-                            route_ID IN (SELECT route_ID FROM technological_route WHERE name = @selectedElement)";
+                        technological_process.name AS Операция, 
+                        type AS Способ_обработки, 
+                        time AS Время_с, 
+                        normatives AS Нормативы,
+                        equip.name AS Оборудование, 
+                        position.name AS Исполнитель,
+                        STUFF((SELECT ', ' + am.name + ' (' + CAST(nam.quantity AS varchar) + ')'
+                               FROM necessary_a_material nam
+                               LEFT JOIN additional_material am ON nam.a_material_ID = am.a_material_ID
+                               WHERE nam.ID = technological_process.ID
+                               FOR XML PATH('')), 1, 2, '') AS Вспомогательные_материалы
+                    FROM 
+                        technological_process 
+                        LEFT JOIN equipment equip ON technological_process.equip_ID = equip.equip_ID 
+                        LEFT JOIN position ON technological_process.position_ID = position.position_ID 
+                    WHERE 
+                        route_ID IN (SELECT route_ID FROM technological_route WHERE name = @selectedElement);
+                    ";
 
                     using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
                     {
@@ -1211,10 +1216,10 @@ namespace АРМ_Швейная_фабрика
                 table.Columns[2].Cells[1].Range.Text = "Операция";
                 table.Columns[3].Cells[1].Range.Text = "Способ обработки";
                 table.Columns[4].Cells[1].Range.Text = "Время(с)";
-                table.Columns[5].Cells[1].Range.Text = "Оборудование";
-                table.Columns[6].Cells[1].Range.Text = "Исполнитель";
-                table.Columns[7].Cells[1].Range.Text = "Вспомогательный материал";
-                table.Columns[8].Cells[1].Range.Text = "Количество";
+                table.Columns[5].Cells[1].Range.Text = "Нормативы";
+                table.Columns[6].Cells[1].Range.Text = "Оборудование";
+                table.Columns[7].Cells[1].Range.Text = "Исполнитель";
+                table.Columns[8].Cells[1].Range.Text = "Вспомогательный материал";
 
                 // Добавление отступа между таблицами
                 Word.Paragraph paragraphSpace = doc.Content.Paragraphs.Add();
@@ -1303,15 +1308,28 @@ namespace АРМ_Швейная_фабрика
                 DataTable dt = new DataTable();
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string sqlQuery = @"SELECT technological_process.ID, technological_process.name AS Операция, type AS Способ_обработки, time AS Время_с, 
-                            equip.name AS Оборудование, position.name AS Исполнитель,
-                            am.name AS Вспомогательный_материал, nam.quantity AS Количество
-                            FROM technological_process 
-                            LEFT JOIN equipment equip ON technological_process.equip_ID = equip.equip_ID 
-                            LEFT JOIN position ON technological_process.position_ID = position.position_ID 
-                            LEFT JOIN necessary_a_material nam ON technological_process.ID = nam.ID
-                            LEFT JOIN additional_material am ON nam.a_material_ID = am.a_material_ID
-                            WHERE route_ID IN (SELECT route_ID FROM technological_route WHERE name = @selectedElement)";
+                    string sqlQuery = @"SELECT DISTINCT
+                        technological_process.ID, 
+                        technological_process.name AS Операция, 
+                        type AS Способ_обработки, 
+                        time AS Время_с, 
+                        normatives AS Нормативы,
+                        equip.name AS Оборудование, 
+                        position.name AS Исполнитель,
+                        STUFF((SELECT ', ' + am.name + ' (' + CAST(nam.quantity AS varchar) + ')'
+                               FROM necessary_a_material nam
+                               LEFT JOIN additional_material am ON nam.a_material_ID = am.a_material_ID
+                               WHERE nam.ID = technological_process.ID
+                               FOR XML PATH('')), 1, 2, '') AS Вспомогательные_материалы
+                    FROM 
+                        technological_process 
+                        LEFT JOIN equipment equip ON technological_process.equip_ID = equip.equip_ID 
+                        LEFT JOIN position ON technological_process.position_ID = position.position_ID 
+                        LEFT JOIN necessary_a_material nam ON technological_process.ID = nam.ID
+                        LEFT JOIN additional_material am ON nam.a_material_ID = am.a_material_ID
+                    WHERE 
+                        route_ID IN (SELECT route_ID FROM technological_route WHERE name = @selectedElement);
+                    ";
 
                     using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
                     {
@@ -1342,11 +1360,12 @@ namespace АРМ_Швейная_фабрика
                 worksheet.Cells[3, 2] = "Операция";
                 worksheet.Cells[3, 3] = "Способ обработки";
                 worksheet.Cells[3, 4] = "Время(с)";
-                worksheet.Cells[3, 5] = "Оборудование";
-                worksheet.Cells[3, 6] = "Исполнитель";
-                worksheet.Cells[3, 7] = "Вспомогательный материал";
-                worksheet.Cells[3, 8] = "Количество";
-
+                worksheet.Cells[3, 5] = "Нормативы";
+                worksheet.Cells[3, 6] = "Оборудование";
+                worksheet.Cells[3, 7] = "Исполнитель";
+                worksheet.Cells[3, 8] = "Вспомогательный материал";
+                Excel.Range headerRange = worksheet.Range[worksheet.Cells[3, 1], worksheet.Cells[3, dt.Columns.Count]];
+                headerRange.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Gray);
                 // Добавление отступа между таблицами
                 Excel.Range range = worksheet.Range[worksheet.Cells[dt.Rows.Count + 5, 1], worksheet.Cells[dt.Rows.Count + 5, dt.Columns.Count]];
                 range.Merge();
@@ -1386,6 +1405,8 @@ namespace АРМ_Швейная_фабрика
                 worksheet.Cells[dt.Rows.Count + 6, 1] = "Сырье";
                 worksheet.Cells[dt.Rows.Count + 6, 2] = "Количество";
 
+                Excel.Range materialsHeaderRange = worksheet.Range[worksheet.Cells[dt.Rows.Count + 6, 1], worksheet.Cells[dt.Rows.Count + 6, materialsDt.Columns.Count]];
+                materialsHeaderRange.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Gray); 
                 // Автоподгон ширины ячеек
                 worksheet.Columns.AutoFit();
                 

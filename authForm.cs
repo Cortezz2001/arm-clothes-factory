@@ -20,6 +20,8 @@ namespace АРМ_Швейная_фабрика
             InitializeComponent();
             mainForm = form;
             wrongDataLabel.Visible = false;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = new Point((Screen.PrimaryScreen.Bounds.Width - this.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - this.Height) / 2);
         }
 
         private void AuthBtn_Click(object sender, EventArgs e)
