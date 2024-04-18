@@ -1151,15 +1151,22 @@ namespace АРМ_Швейная_фабрика
                 DataTable dt = new DataTable();
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string sqlQuery = @"SELECT technological_process.ID, technological_process.name AS Операция, type AS Способ_обработки, time AS Время_с, 
-                                    equip.name AS Оборудование, position.name AS Исполнитель,
-                                    am.name AS Вспомогательный_материал, nam.quantity AS Количество
-                                    FROM technological_process 
-                                    LEFT JOIN equipment equip ON technological_process.equip_ID = equip.equip_ID 
-                                    LEFT JOIN position ON technological_process.position_ID = position.position_ID 
-                                    LEFT JOIN necessary_a_material nam ON technological_process.ID = nam.ID
-                                    LEFT JOIN additional_material am ON nam.a_material_ID = am.a_material_ID
-                                    WHERE route_ID IN (SELECT route_ID FROM technological_route WHERE name = @selectedElement)";
+                    string sqlQuery = @"SELECT 
+                            technological_process.name AS Операция, 
+                            type AS Способ_обработки, 
+                            time AS Время_с, 
+                            equip.name AS Оборудование, 
+                            position.name AS Исполнитель,
+                            am.name AS Вспомогательный_материал, 
+                            nam.quantity AS Количество
+                        FROM 
+                            technological_process 
+                            LEFT JOIN equipment equip ON technological_process.equip_ID = equip.equip_ID 
+                            LEFT JOIN position ON technological_process.position_ID = position.position_ID 
+                            LEFT JOIN necessary_a_material nam ON technological_process.ID = nam.ID
+                            LEFT JOIN additional_material am ON nam.a_material_ID = am.a_material_ID
+                        WHERE 
+                            route_ID IN (SELECT route_ID FROM technological_route WHERE name = @selectedElement)";
 
                     using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
                     {
@@ -1171,17 +1178,27 @@ namespace АРМ_Швейная_фабрика
                 }
 
                 // Добавление таблицы с данными из technological_process и necessary_a_material
-                Word.Table table = doc.Tables.Add(title.Range, dt.Rows.Count + 1, dt.Columns.Count);
+                Word.Table table = doc.Tables.Add(title.Range, dt.Rows.Count + 1, dt.Columns.Count + 1);
                 for (int i = 0; i < dt.Columns.Count; i++)
                 {
                     table.Cell(1, i + 1).Range.Text = dt.Columns[i].ColumnName;
                     table.Cell(1, i + 1).Range.Shading.BackgroundPatternColor = Word.WdColor.wdColorGray25; // Изменение цвета фона заголовков
+                    table.Cell(1, dt.Columns.Count + 1).Range.Shading.BackgroundPatternColor = Word.WdColor.wdColorGray25;
                 }
+                int rowNumber = 1; // Счетчик номеров строк
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
+                    // Вывод номера строки
+                    table.Cell(i + 2, 1).Range.Text = rowNumber.ToString();
+                    rowNumber++;
+
+                    // Вывод остальных данных
                     for (int j = 0; j < dt.Columns.Count; j++)
                     {
-                        table.Cell(i + 2, j + 1).Range.Text = dt.Rows[i][j].ToString();
+                        if (j + 2 <= table.Columns.Count)
+                        {
+                            table.Cell(i + 2, j + 2).Range.Text = dt.Rows[i][j].ToString();
+                        }
                     }
                 }
 
@@ -1275,9 +1292,8 @@ namespace АРМ_Швейная_фабрика
                 Excel.Application excelApp = new Excel.Application();
                 Excel.Workbook workbook = excelApp.Workbooks.Add();
                 Excel.Worksheet worksheet = workbook.ActiveSheet;
-
+                worksheet.Columns.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
                 // Добавление заголовка "Технологическая карта - [name]"
-                worksheet.Cells[1, 1] = "Технологическая карта - " + selectedElement;
 
                 // Выполнение SQL-запроса для получения данных
                 DataTable dt = new DataTable();
@@ -1301,20 +1317,22 @@ namespace АРМ_Швейная_фабрика
                         adapter.Fill(dt);
                     }
                 }
-
+                Excel.Range titleRange = worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[1, dt.Columns.Count]];
+                titleRange.Merge();
+                titleRange.Value = "Технологическая карта - " + selectedElement;
                 // Добавление таблицы с данными из technological_process и necessary_a_material
-                for (int i = 0; i < dt.Columns.Count; i++)
+                for (int i = 1; i < dt.Columns.Count; i++) // Начинаем с 1, чтобы пропустить первый столбец с ID
                 {
                     worksheet.Cells[3, i + 1] = dt.Columns[i].ColumnName;
                 }
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
-                    for (int j = 0; j < dt.Columns.Count; j++)
+                    worksheet.Cells[i + 4, 1] = (i + 1).ToString(); // Заменяем ID на номер строки
+                    for (int j = 1; j < dt.Columns.Count; j++) // Начинаем с 1, чтобы пропустить первый столбец с ID
                     {
                         worksheet.Cells[i + 4, j + 1] = dt.Rows[i][j].ToString();
                     }
                 }
-
                 // Переименование столбцов
                 worksheet.Cells[3, 1] = "Номер";
                 worksheet.Cells[3, 2] = "Операция";
@@ -1366,7 +1384,7 @@ namespace АРМ_Швейная_фабрика
 
                 // Автоподгон ширины ячеек
                 worksheet.Columns.AutoFit();
-
+                
                 // Сохранение документа
                 workbook.SaveAs(filePath);
                 workbook.Close();
